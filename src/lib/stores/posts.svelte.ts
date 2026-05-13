@@ -129,11 +129,14 @@ class PostsStore {
     }));
 
     const map = new Map<string, CommentWithScore>();
+    for (const c of enriched) map.set(c.id, c);
+
     const roots: CommentWithScore[] = [];
     for (const c of enriched) {
-      map.set(c.id, c);
       if (c.parent_id) {
-        (map.get(c.parent_id)?.replies || roots).push(c);
+        const parent = map.get(c.parent_id);
+        if (parent) parent.replies.push(c);
+        else roots.push(c);
       } else {
         roots.push(c);
       }
