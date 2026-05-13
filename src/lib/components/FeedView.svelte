@@ -124,7 +124,9 @@
   }
 
   .sticky-hd {
+    margin: 0 12px;
     padding: 14px 20px 12px;
+    border-radius: 12px;
     position: sticky;
     top: 0;
     background: var(--bg-glass);

@@ -24,7 +24,7 @@
   let replying = $state(false);
   let replyText = $state('');
 
-  const depthColors = ['oklch(0.52 0.30 295)', 'oklch(0.60 0.24 355)', 'oklch(0.80 0.18 85)', 'oklch(0.44 0.20 295)', 'oklch(0.55 0.18 10)', 'oklch(0.70 0.16 75)'];
+  const depthColors = ['oklch(0.52 0.30 295)', 'oklch(0.60 0.24 320)', 'oklch(0.46 0.26 305)', 'oklch(0.56 0.22 290)', 'oklch(0.64 0.20 310)', 'oklch(0.42 0.24 295)'];
   let color = $derived(depthColors[depth % depthColors.length]);
 
   function submitReply() {
