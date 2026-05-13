@@ -125,7 +125,7 @@
     align-items: center;
     justify-content: space-between;
     height: 48px;
-    padding: 0 20px;
+    padding: 36px 12px;
     position: sticky;
     top: 0;
     background: var(--bg-glass);
@@ -135,7 +135,7 @@
   }
   .btn-group {
     display: flex;
-    gap: 4px;
+    gap: 8px;
   }
   .hd-btn {
     padding: 6px 14px;
@@ -155,7 +155,7 @@
     color: var(--text1);
   }
   .hd-btn.on {
-    background: var(--accent);
+    background: var(--accent-soft);
     color: oklch(0.06 0 0);
     border-color: var(--accent);
   }
