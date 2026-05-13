@@ -67,14 +67,13 @@
 
 <style>
   .sticky-hd {
-    margin: 0 12px;
     padding: 14px 20px;
-    border-radius: 12px;
     position: sticky;
     top: 0;
     background: var(--bg-glass);
     backdrop-filter: blur(14px);
     z-index: 20;
+    border-bottom: 1px solid oklch(1 0 0 / 0.04);
   }
   .seg {
     display: flex;

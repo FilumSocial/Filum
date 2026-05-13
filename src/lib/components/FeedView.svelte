@@ -96,7 +96,7 @@
 
 <style>
   .error-banner {
-    margin: 8px 12px;
+    margin: 0 12px 24px;
     padding: 10px 14px;
     background: rgba(224, 112, 112, 0.12);
     color: oklch(0.65 0.16 25);
@@ -105,14 +105,13 @@
   }
 
   .compose-empty {
-    margin: 0 12px 10px;
+    margin: 0 12px 24px;
     padding: 14px 20px;
-    background: var(--surface);
+    background: var(--bg-raised);
     border-radius: 12px;
-    box-shadow: var(--shadow-s);
   }
   .compose-empty:first-of-type {
-    margin-top: 8px;
+    margin-top: 12px;
   }
 
   .empty-card {
@@ -124,17 +123,13 @@
   }
 
   .sticky-hd {
-    margin: 0 12px;
     padding: 14px 20px 12px;
-    border-radius: 12px;
     position: sticky;
     top: 0;
     background: var(--bg-glass);
     backdrop-filter: blur(14px);
     z-index: 20;
-    box-shadow:
-      inset 0 -1px 0 oklch(1 0 0 / 0.03),
-      0 1px 3px oklch(0 0 0 / 0.2);
+    border-bottom: 1px solid oklch(1 0 0 / 0.04);
   }
   .tabs {
     display: flex;
@@ -157,7 +152,7 @@
   .tab:hover { color: var(--text1); }
   .tab.on {
     color: var(--text1);
-    border-bottom-color: var(--accent);
+    border-bottom-color: var(--accent-soft);
   }
   .seg {
     display: flex;

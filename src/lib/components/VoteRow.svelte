@@ -80,7 +80,7 @@
   }
   .score {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     min-width: 26px;
     text-align: center;
     color: var(--text2);

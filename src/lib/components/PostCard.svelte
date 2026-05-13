@@ -60,7 +60,7 @@
 
 <style>
   .pcard {
-    margin: 0 12px 10px;
+    margin: 0 12px 24px;
     padding: 16px 20px;
     background: var(--surface);
     border-radius: 12px;
@@ -68,7 +68,7 @@
     transition: box-shadow 0.15s, transform 0.15s;
   }
   .pcard:first-of-type {
-    margin-top: 8px;
+    margin-top: 12px;
   }
   .pcard:hover {
     box-shadow: var(--shadow-m);

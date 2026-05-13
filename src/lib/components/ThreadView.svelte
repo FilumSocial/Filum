@@ -56,7 +56,7 @@
   </div>
 
   {#if userProfile}
-    <div style="margin: 0 12px 10px;">
+    <div style="margin: 0 12px 24px;">
       <ComposeBox
         profile={userProfile}
         placeholder="Write a comment..."
@@ -88,17 +88,13 @@
 
 <style>
   .sticky-hd {
-    margin: 0 12px;
     padding: 14px 20px;
-    border-radius: 12px;
     position: sticky;
     top: 0;
     background: var(--bg-glass);
     backdrop-filter: blur(14px);
     z-index: 20;
-    box-shadow:
-      inset 0 -1px 0 oklch(1 0 0 / 0.03),
-      0 1px 3px oklch(0 0 0 / 0.2);
+    border-bottom: 1px solid oklch(1 0 0 / 0.04);
   }
   .back-btn {
     padding: 6px 12px;
@@ -116,7 +112,7 @@
     box-shadow: var(--shadow-s);
   }
   .full-post {
-    margin: 8px 12px 10px;
+    margin: 12px 12px 24px;
     padding: 18px 20px;
     background: var(--surface);
     border-radius: 12px;
