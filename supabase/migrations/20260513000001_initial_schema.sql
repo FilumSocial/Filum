@@ -14,17 +14,9 @@ CREATE TABLE IF NOT EXISTS profiles (
 
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
-DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Profiles are public') THEN
-    CREATE POLICY "Profiles are public" ON profiles FOR SELECT USING (true);
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Users can insert their own profile') THEN
-    CREATE POLICY "Users can insert their own profile" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Users can update their own profile') THEN
-    CREATE POLICY "Users can update their own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
-  END IF;
-END $$;
+CREATE POLICY IF NOT EXISTS "Profiles are public" ON profiles FOR SELECT USING (true);
+CREATE POLICY IF NOT EXISTS "Users can insert their own profile" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY IF NOT EXISTS "Users can update their own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
 
 -- 2. Posts
 CREATE TABLE IF NOT EXISTS posts (
@@ -39,20 +31,10 @@ CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created_at DESC);
 
 ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
 
-DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Posts are public') THEN
-    CREATE POLICY "Posts are public" ON posts FOR SELECT USING (true);
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Authenticated users can insert posts') THEN
-    CREATE POLICY "Authenticated users can insert posts" ON posts FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Users can update their own posts') THEN
-    CREATE POLICY "Users can update their own posts" ON posts FOR UPDATE USING (auth.uid() = author_id);
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Users can delete their own posts') THEN
-    CREATE POLICY "Users can delete their own posts" ON posts FOR DELETE USING (auth.uid() = author_id);
-  END IF;
-END $$;
+CREATE POLICY IF NOT EXISTS "Posts are public" ON posts FOR SELECT USING (true);
+CREATE POLICY IF NOT EXISTS "Authenticated users can insert posts" ON posts FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY IF NOT EXISTS "Users can update their own posts" ON posts FOR UPDATE USING (auth.uid() = author_id);
+CREATE POLICY IF NOT EXISTS "Users can delete their own posts" ON posts FOR DELETE USING (auth.uid() = author_id);
 
 -- 3. Comments (threaded)
 CREATE TABLE IF NOT EXISTS comments (
@@ -69,20 +51,10 @@ CREATE INDEX IF NOT EXISTS idx_comments_parent ON comments(parent_id);
 
 ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
 
-DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Comments are public') THEN
-    CREATE POLICY "Comments are public" ON comments FOR SELECT USING (true);
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Authenticated users can insert comments') THEN
-    CREATE POLICY "Authenticated users can insert comments" ON comments FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Users can update their own comments') THEN
-    CREATE POLICY "Users can update their own comments" ON comments FOR UPDATE USING (auth.uid() = author_id);
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Users can delete their own comments') THEN
-    CREATE POLICY "Users can delete their own comments" ON comments FOR DELETE USING (auth.uid() = author_id);
-  END IF;
-END $$;
+CREATE POLICY IF NOT EXISTS "Comments are public" ON comments FOR SELECT USING (true);
+CREATE POLICY IF NOT EXISTS "Authenticated users can insert comments" ON comments FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY IF NOT EXISTS "Users can update their own comments" ON comments FOR UPDATE USING (auth.uid() = author_id);
+CREATE POLICY IF NOT EXISTS "Users can delete their own comments" ON comments FOR DELETE USING (auth.uid() = author_id);
 
 -- 4. Votes (polymorphic: applies to posts OR comments, enforced by CHECK)
 CREATE TABLE IF NOT EXISTS votes (
@@ -106,20 +78,10 @@ CREATE INDEX IF NOT EXISTS idx_votes_user ON votes(user_id);
 
 ALTER TABLE votes ENABLE ROW LEVEL SECURITY;
 
-DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Votes are public') THEN
-    CREATE POLICY "Votes are public" ON votes FOR SELECT USING (true);
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Authenticated users can insert votes') THEN
-    CREATE POLICY "Authenticated users can insert votes" ON votes FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Users can update their own votes') THEN
-    CREATE POLICY "Users can update their own votes" ON votes FOR UPDATE USING (auth.uid() = user_id);
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Users can delete their own votes') THEN
-    CREATE POLICY "Users can delete their own votes" ON votes FOR DELETE USING (auth.uid() = user_id);
-  END IF;
-END $$;
+CREATE POLICY IF NOT EXISTS "Votes are public" ON votes FOR SELECT USING (true);
+CREATE POLICY IF NOT EXISTS "Authenticated users can insert votes" ON votes FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY IF NOT EXISTS "Users can update their own votes" ON votes FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY IF NOT EXISTS "Users can delete their own votes" ON votes FOR DELETE USING (auth.uid() = user_id);
 
 -- 5. Follows
 CREATE TABLE IF NOT EXISTS follows (
@@ -136,17 +98,9 @@ CREATE INDEX IF NOT EXISTS idx_follows_following ON follows(following_id);
 
 ALTER TABLE follows ENABLE ROW LEVEL SECURITY;
 
-DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Follows are public') THEN
-    CREATE POLICY "Follows are public" ON follows FOR SELECT USING (true);
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Authenticated users can follow') THEN
-    CREATE POLICY "Authenticated users can follow" ON follows FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE polname = 'Users can unfollow') THEN
-    CREATE POLICY "Users can unfollow" ON follows FOR DELETE USING (auth.uid() = follower_id);
-  END IF;
-END $$;
+CREATE POLICY IF NOT EXISTS "Follows are public" ON follows FOR SELECT USING (true);
+CREATE POLICY IF NOT EXISTS "Authenticated users can follow" ON follows FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY IF NOT EXISTS "Users can unfollow" ON follows FOR DELETE USING (auth.uid() = follower_id);
 
 -- 6. Helper views for aggregated scores
 CREATE OR REPLACE VIEW post_scores AS
