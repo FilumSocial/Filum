@@ -1,13 +1,17 @@
 import { createClient } from '$lib/supabase/client';
 import type { PostWithScore, CommentWithScore, Profile, VoteType, CommentRow } from '$lib/types';
 
+type SortMode = 'chron' | 'top';
+
 class PostsStore {
   posts = $state<PostWithScore[]>([]);
   postMap = $state<Map<string, PostWithScore>>(new Map());
   loading = $state(false);
   error = $state<string | null>(null);
+  #sortMode: SortMode = 'chron';
 
-  async fetchFeed(followingIds: string[], sort: 'chron' | 'top' = 'chron', userId?: string) {
+  async fetchFeed(followingIds: string[], sort: SortMode = 'chron', userId?: string) {
+    this.#sortMode = sort;
     this.loading = true;
     this.error = null;
     const supabase = createClient();
@@ -105,6 +109,10 @@ class PostsStore {
       post.upvotes += voteType === 'up' ? 1 : 0;
       post.downvotes += voteType === 'down' ? 1 : 0;
       post.user_vote = voteType;
+    }
+
+    if (this.#sortMode === 'top') {
+      this.posts = [...this.posts].sort((a, b) => b.score - a.score || b.created_at.localeCompare(a.created_at));
     }
   }
 
