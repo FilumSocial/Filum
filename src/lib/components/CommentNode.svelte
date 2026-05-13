@@ -36,9 +36,15 @@
 
 <div class="cmt">
   <div class="cmt-meta">
-    <Avatar name={comment.author.display_name} color={comment.author.avatar_color} size={27} />
-    <span class="font-semibold text-[13px] text-[var(--text1)]">{comment.author.display_name}</span>
-    <span class="text-[12px] text-[var(--text3)]">@{comment.author.username}</span>
+    <button class="user-btn" onclick={() => window.location.href = `/profile/${comment.author.id}`}>
+      <Avatar name={comment.author.display_name} color={comment.author.avatar_color} size={27} />
+    </button>
+    <button class="user-btn" onclick={() => window.location.href = `/profile/${comment.author.id}`}>
+      <span class="font-semibold text-[13px] text-[var(--text1)] hover:underline">{comment.author.display_name}</span>
+    </button>
+    <button class="user-btn" onclick={() => window.location.href = `/profile/${comment.author.id}`}>
+      <span class="text-[12px] text-[var(--text3)]">@{comment.author.username}</span>
+    </button>
     <span class="text-[12px] text-[var(--text3)] ml-auto">{ago(comment.created_at)}</span>
     {#if comment.replies.length > 0}
       <button
@@ -120,10 +126,20 @@
   }
   .replies-wrap {
     border-left: 2px solid;
-    margin-left: 13px;
-    padding-left: 14px;
+    margin-left: 22px;
+    padding-left: 20px;
     margin-top: 2px;
   }
+  .user-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .user-btn:hover { opacity: 0.85; }
   .reply-box {
     margin-top: 8px;
     padding: 10px 12px;

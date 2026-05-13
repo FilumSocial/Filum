@@ -34,13 +34,13 @@
   </div>
 
   <div class="full-post">
-    <div class="flex gap-3 mb-3 items-start">
+    <button class="user-btn flex gap-3 mb-3 items-start" onclick={() => window.location.href = `/profile/${post.author.id}`}>
       <Avatar name={post.author.display_name} color={post.author.avatar_color} size={42} />
-      <div>
-        <div class="font-semibold text-[15px]">{post.author.display_name}</div>
+      <div class="text-left">
+        <div class="font-semibold text-[15px] hover:underline">{post.author.display_name}</div>
         <div class="text-[13px] text-[var(--text3)]">@{post.author.username} &middot; {ago(post.created_at)}</div>
       </div>
-    </div>
+    </button>
     <p class="text-[17px] leading-relaxed text-[var(--text1)] mb-3.5 whitespace-pre-wrap">{post.content}</p>
     <div class="pt-3 border-t border-[var(--border)]">
       <VoteRow
@@ -114,4 +114,14 @@
   .slide-in {
     animation: slideIn 0.18s ease forwards;
   }
+  .user-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .user-btn:hover { opacity: 0.85; }
 </style>

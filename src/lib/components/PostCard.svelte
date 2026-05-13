@@ -24,19 +24,19 @@
   tabindex="0"
   onkeydown={(e) => { if (e.key === 'Enter') onClick(); }}
 >
-  <div class="flex gap-3 mb-2.5 items-center">
-    <Avatar name={post.author.display_name} color={post.author.avatar_color} size={38} />
-    <div class="flex-1 min-w-0">
-      <div class="flex items-center gap-1.5 flex-wrap">
-        <span class="font-semibold text-[14px] text-[var(--text1)]">{post.author.display_name}</span>
-        {#if following}
-          <span class="following-badge">following</span>
-        {/if}
-        <span class="text-[12px] text-[var(--text3)]">@{post.author.username}</span>
+    <button class="user-row" onclick={(e) => { e.stopPropagation(); window.location.href = `/profile/${post.author.id}`; }}>
+      <Avatar name={post.author.display_name} color={post.author.avatar_color} size={38} />
+      <div class="flex-1 min-w-0 text-left">
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span class="font-semibold text-[14px] text-[var(--text1)] hover:underline">{post.author.display_name}</span>
+          {#if following}
+            <span class="following-badge">following</span>
+          {/if}
+          <span class="text-[12px] text-[var(--text3)]">@{post.author.username}</span>
+        </div>
       </div>
-    </div>
-    <span class="text-[12px] text-[var(--text3)] shrink-0">{ago(post.created_at)}</span>
-  </div>
+      <span class="text-[12px] text-[var(--text3)] shrink-0">{ago(post.created_at)}</span>
+    </button>
 
   <p class="post-content">{post.content}</p>
 
@@ -101,4 +101,19 @@
   .fade-up {
     animation: fadeUp 0.18s ease forwards;
   }
+  .user-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+  }
+  .user-row:hover { opacity: 0.85; }
 </style>
