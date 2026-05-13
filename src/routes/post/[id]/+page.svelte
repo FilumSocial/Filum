@@ -5,7 +5,7 @@
   import { createClient } from '$lib/supabase/client';
   import type { PostWithScore, CommentWithScore, Profile } from '$lib/types';
 
-  let { data }: { data: { id: string } } = $props();
+  let { params } = $props();
 
   let post = $state<PostWithScore | null>(null);
   let comments = $state<CommentWithScore[]>([]);
@@ -14,7 +14,7 @@
   async function loadThread() {
     if (!auth.initialized) return;
     const supabase = createClient();
-    const postId = data.id;
+    const postId = params.id;
 
     const { data: postData } = await supabase
       .from('posts')
@@ -70,7 +70,7 @@
 
   async function voteComment(id: string, dir: 'up' | 'down') {
     await postsStore.voteComment(id, dir);
-    comments = await postsStore.fetchComments(data.id, auth.user?.id);
+    comments = await postsStore.fetchComments(params.id, auth.user?.id);
   }
 
   async function addComment(content: string): Promise<void> {
