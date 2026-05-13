@@ -126,8 +126,8 @@
   }
   .replies-wrap {
     border-left: 2px solid oklch(1 0 0 / 0.06);
-    margin-left: 0;
-    padding-left: 28px;
+    margin-left: 14px;
+    padding-left: 14px;
     margin-top: 6px;
   }
   .user-btn {
