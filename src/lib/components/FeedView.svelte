@@ -30,26 +30,26 @@
 
 <div>
   <div class="sticky-hd">
-    <div class="tabs">
+    <div class="btn-group">
       <button
-        class="tab"
+        class="hd-btn"
         class:on={feedMode === 'following'}
         onclick={() => onSetFeedMode('following')}
       >Following</button>
       <button
-        class="tab"
+        class="hd-btn"
         class:on={feedMode === 'rec'}
         onclick={() => onSetFeedMode('rec')}
       >Recommended</button>
     </div>
-    <div class="seg">
+    <div class="btn-group">
       <button
-        class="seg-btn"
+        class="hd-btn"
         class:on={sortMode === 'chron'}
         onclick={() => onSetSortMode('chron')}
       >New</button>
       <button
-        class="seg-btn"
+        class="hd-btn"
         class:on={sortMode === 'top'}
         onclick={() => onSetSortMode('top')}
       >Top</button>
@@ -133,16 +133,14 @@
     z-index: 20;
     border-bottom: 1px solid var(--border);
   }
-  .tabs {
+  .btn-group {
     display: flex;
-    gap: 0;
-    height: 100%;
+    gap: 4px;
   }
-  .tab {
-    height: 100%;
-    padding: 0 14px;
-    border: none;
-    border-bottom: 2px solid transparent;
+  .hd-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
     background: transparent;
     color: var(--text2);
     font-family: 'DM Sans', sans-serif;
@@ -150,35 +148,15 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.12s;
-  }
-  .tab:hover { color: var(--text1); }
-  .tab.on {
-    color: var(--text1);
-    border-bottom-color: var(--accent);
-  }
-  .seg {
-    display: flex;
-    background: var(--surface2);
-    border-radius: 7px;
-    padding: 3px;
-    gap: 2px;
-  }
-  .seg-btn {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    background: transparent;
-    color: var(--text2);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.12s;
     white-space: nowrap;
   }
-  .seg-btn.on {
-    background: var(--surface);
+  .hd-btn:hover {
+    border-color: var(--text3);
     color: var(--text1);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+  .hd-btn.on {
+    background: var(--accent);
+    color: oklch(0.06 0 0);
+    border-color: var(--accent);
   }
 </style>

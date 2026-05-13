@@ -34,14 +34,14 @@
 <div>
   <div class="sticky-hd">
     <span class="font-semibold text-[15px]">Explore</span>
-    <div class="seg">
+    <div class="btn-group">
       <button
-        class="seg-btn"
+        class="hd-btn"
         class:on={sortMode === 'top'}
         onclick={() => sortMode = 'top'}
       >Top</button>
       <button
-        class="seg-btn"
+        class="hd-btn"
         class:on={sortMode === 'chron'}
         onclick={() => sortMode = 'chron'}
       >New</button>
@@ -77,30 +77,30 @@
     z-index: 20;
     border-bottom: 1px solid var(--border);
   }
-  .seg {
+  .btn-group {
     display: flex;
-    background: var(--surface2);
-    border-radius: 7px;
-    padding: 3px;
-    gap: 2px;
+    gap: 4px;
   }
-  .seg-btn {
-    flex: 1;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
+  .hd-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
     background: transparent;
     color: var(--text2);
     font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.12s;
     white-space: nowrap;
   }
-  .seg-btn.on {
-    background: var(--surface);
+  .hd-btn:hover {
+    border-color: var(--text3);
     color: var(--text1);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+  .hd-btn.on {
+    background: var(--accent);
+    color: oklch(0.06 0 0);
+    border-color: var(--accent);
   }
 </style>
