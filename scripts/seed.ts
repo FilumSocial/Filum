@@ -1,7 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient('http://127.0.0.1:54321', 'SUPABASE_ANON_KEY');
-const admin = createClient('http://127.0.0.1:54321', 'SUPABASE_SERVICE_ROLE_KEY');
+const supabaseUrl = process.env.SUPABASE_URL || 'http://127.0.0.1:54321';
+const anonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+
+const supabase = createClient(supabaseUrl, anonKey);
+const admin = createClient(supabaseUrl, serviceKey);
 
 const users = [
   { email: 'mia@example.com', password: 'password123', username: 'miahoff', display_name: 'Mia Hoffmann', avatar_color: '#8C00FF', bio: 'Building things' },
