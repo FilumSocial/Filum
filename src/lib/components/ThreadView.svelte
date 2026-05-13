@@ -42,7 +42,7 @@
       </div>
     </button>
     <p class="text-[17px] leading-relaxed text-[var(--text1)] mb-3.5 whitespace-pre-wrap">{post.content}</p>
-    <div class="pt-3 border-t border-[var(--border)] -mx-1">
+    <div class="mt-3 -mx-1">
       <VoteRow
         upvotes={post.upvotes}
         downvotes={post.downvotes}

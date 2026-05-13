@@ -121,7 +121,7 @@
       {/if}
     </div>
 
-    <div class="border-b border-[var(--border)] px-5 py-3">
+    <div class="px-5 pt-6 pb-2">
       <span class="text-sm font-semibold text-[var(--text1)]">Posts</span>
     </div>
 
@@ -162,10 +162,19 @@
     font-weight: 600;
     cursor: pointer;
     flex-shrink: 0;
-    transition: all 0.12s;
+    transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  }
+  .follow-btn:hover {
+    background: var(--accent-soft);
+    box-shadow: var(--shadow-s);
   }
   .follow-btn.following {
     background: var(--accent);
-    color: oklch(0.06 0 0);
+    color: oklch(0.065 0.02 175);
+    box-shadow: var(--shadow-s);
+  }
+  .follow-btn.following:hover {
+    background: oklch(0.66 0.14 155);
+    color: oklch(0.065 0.02 175);
   }
 </style>
