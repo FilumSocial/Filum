@@ -7,23 +7,31 @@
     onSubmit,
     placeholder = 'What are you thinking?',
     buttonLabel = 'Post',
-    autoFocus = false,
     compact = false,
   }: {
     profile: Profile;
-    onSubmit: (content: string) => void;
+    onSubmit: (content: string) => Promise<void> | void;
     placeholder?: string;
     buttonLabel?: string;
-    autoFocus?: boolean;
     compact?: boolean;
   } = $props();
 
   let text = $state('');
+  let submitting = $state(false);
+  let error = $state('');
 
-  function submit() {
-    if (!text.trim()) return;
-    onSubmit(text.trim());
-    text = '';
+  async function submit() {
+    if (!text.trim() || submitting) return;
+    submitting = true;
+    error = '';
+    try {
+      await onSubmit(text.trim());
+      text = '';
+    } catch (e) {
+      error = e instanceof Error ? e.message : 'Something went wrong';
+    } finally {
+      submitting = false;
+    }
   }
 
   function handleKeydown(e: KeyboardEvent) {
@@ -36,23 +44,29 @@
 
 <div class="compose">
   <Avatar name={profile.display_name} color={profile.avatar_color} size={compact ? 32 : 38} />
-  <div class="flex-1">
+  <div class="flex-1 min-w-0">
     <textarea
       class="compose-ta"
-      style={compact ? 'font-size:14px;min-height:38px' : ''}
+      class:compact
       placeholder={placeholder}
       bind:value={text}
       rows={text && !compact ? 3 : 1}
       onkeydown={handleKeydown}
+      disabled={submitting}
     ></textarea>
+    {#if error}
+      <p class="error-msg">{error}</p>
+    {/if}
     {#if text}
       <div class="flex justify-end mt-1.5">
         <button
           class="post-btn"
           class:compact
-          disabled={!text.trim()}
+          disabled={!text.trim() || submitting}
           onclick={submit}
-        >{buttonLabel}</button>
+        >
+          {submitting ? 'Posting...' : buttonLabel}
+        </button>
       </div>
     {/if}
   </div>
@@ -78,8 +92,15 @@
     line-height: 1.55;
     min-height: 44px;
   }
+  .compose-ta.compact {
+    font-size: 14px;
+    min-height: 38px;
+  }
   .compose-ta::placeholder {
     color: var(--text3);
+  }
+  .compose-ta:disabled {
+    opacity: 0.5;
   }
   .post-btn {
     padding: 7px 18px;
@@ -92,6 +113,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: opacity 0.12s;
+    flex-shrink: 0;
   }
   .post-btn:hover {
     opacity: 0.87;
@@ -104,5 +126,10 @@
     padding: 5px 13px;
     border-radius: 14px;
     font-size: 12px;
+  }
+  .error-msg {
+    font-size: 12px;
+    color: #e07070;
+    margin-top: 4px;
   }
 </style>

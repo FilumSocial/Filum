@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import FeedView from '$lib/components/FeedView.svelte';
   import { auth } from '$lib/stores/auth.svelte';
   import { postsStore } from '$lib/stores/posts.svelte';
@@ -20,18 +19,15 @@
         .eq('follower_id', auth.profile.id);
       if (data) followingIds = data.map(f => f.following_id);
     }
-    postsStore.fetchFeed(followingIds, sortMode, auth.user?.id);
+    await postsStore.fetchFeed(followingIds, sortMode, auth.user?.id);
   }
 
   $effect(() => {
-    if (auth.initialized) {
-      loadFeed();
-    }
+    if (auth.initialized) loadFeed();
   });
 
   $effect(() => {
-    feedMode;
-    sortMode;
+    feedMode; sortMode;
     if (auth.initialized) loadFeed();
   });
 
@@ -45,9 +41,9 @@
     postsStore.votePost(id, dir);
   }
 
-  function newPost(content: string) {
-    if (!profile) return;
-    postsStore.createPost(content, profile);
+  async function newPost(content: string): Promise<void> {
+    if (!auth.profile) return;
+    await postsStore.createPost(content, auth.profile);
   }
 </script>
 

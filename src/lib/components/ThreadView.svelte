@@ -22,8 +22,8 @@
     onBack: () => void;
     onVotePost: (dir: 'up' | 'down') => void;
     onVoteComment: (id: string, dir: 'up' | 'down') => void;
-    onAddComment: (content: string) => void;
-    onAddReply: (parentId: string, content: string) => void;
+    onAddComment: (content: string) => Promise<void> | void;
+    onAddReply: (parentId: string, content: string) => Promise<void> | void;
   } = $props();
 </script>
 

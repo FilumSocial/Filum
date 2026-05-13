@@ -22,7 +22,7 @@
     onSetSortMode: (mode: SortMode) => void;
     onOpenThread: (id: string) => void;
     onVotePost: (id: string, dir: 'up' | 'down') => void;
-    onNewPost: (content: string) => void;
+    onNewPost: (content: string) => Promise<void> | void;
   } = $props();
 </script>
 

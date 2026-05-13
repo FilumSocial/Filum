@@ -16,7 +16,7 @@
     depth?: number;
     userProfile: Profile | null;
     onVote: (id: string, dir: 'up' | 'down') => void;
-    onReply: (parentId: string, content: string) => void;
+    onReply: (parentId: string, content: string) => Promise<void> | void;
   } = $props();
 
   let collapsed = $state(false);

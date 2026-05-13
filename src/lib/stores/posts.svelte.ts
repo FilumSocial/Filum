@@ -13,13 +13,8 @@ class PostsStore {
     const supabase = createClient();
 
     try {
-      let query = supabase
-        .from('post_scores')
-        .select('*');
-
-      if (followingIds.length > 0) {
-        query = query.in('author_id', followingIds);
-      }
+      let query = supabase.from('post_scores').select('*');
+      if (followingIds.length > 0) query = query.in('author_id', followingIds);
 
       const { data: postsData, error: postsError } = await query
         .order(sort === 'top' ? 'score' : 'created_at', { ascending: sort !== 'top' });
@@ -35,35 +30,17 @@ class PostsStore {
 
       const profileMap = new Map((profiles || []).map(p => [p.id, p]));
 
-      let userVotes: Map<string, 'up' | 'down'> = new Map();
-      if (userId) {
-        const { data: votes } = await supabase
-          .from('votes')
-          .select('post_id, vote_type')
-          .eq('user_id', userId)
-          .in('post_id', postsData.map(p => p.id))
-          .not('post_id', 'is', null);
-
-        if (votes) {
-          for (const v of votes) {
-            if (v.post_id) userVotes.set(v.post_id, v.vote_type as 'up' | 'down');
-          }
-        }
-      }
+      const userVotes = userId ? await this.fetchUserPostVotes(userId, postsData.map(p => p.id)) : new Map();
 
       const commentCounts = await this.fetchCommentCounts(postsData.map(p => p.id));
 
-      const enriched: PostWithScore[] = postsData.map(p => ({
+      this.posts = postsData.map(p => ({
         ...p,
-        author: profileMap.get(p.author_id) as Profile || {} as Profile,
+        author: (profileMap.get(p.author_id) || {}) as Profile,
         user_vote: userVotes.get(p.id) || null,
         comment_count: commentCounts.get(p.id) || 0,
       }));
-
-      this.posts = enriched;
-      const map = new Map<string, PostWithScore>();
-      enriched.forEach(p => map.set(p.id, p));
-      this.postMap = map;
+      this.postMap = new Map(this.posts.map(p => [p.id, p]));
     } catch (e) {
       this.error = e instanceof Error ? e.message : 'Failed to fetch posts';
     } finally {
@@ -71,45 +48,42 @@ class PostsStore {
     }
   }
 
-  async fetchCommentCounts(postIds: string[]): Promise<Map<string, number>> {
-    if (postIds.length === 0) return new Map();
+  private async fetchUserPostVotes(userId: string, postIds: string[]): Promise<Map<string, 'up' | 'down'>> {
     const supabase = createClient();
     const { data } = await supabase
-      .from('comments')
-      .select('post_id')
-      .in('post_id', postIds);
+      .from('votes')
+      .select('post_id, vote_type')
+      .eq('user_id', userId)
+      .in('post_id', postIds)
+      .not('post_id', 'is', null);
 
+    const map = new Map<string, 'up' | 'down'>();
+    if (data) for (const v of data) { if (v.post_id) map.set(v.post_id, v.vote_type as 'up' | 'down'); }
+    return map;
+  }
+
+  private async fetchCommentCounts(postIds: string[]): Promise<Map<string, number>> {
+    if (postIds.length === 0) return new Map();
+    const supabase = createClient();
+    const { data } = await supabase.from('comments').select('post_id').in('post_id', postIds);
     const counts = new Map<string, number>();
-    if (data) {
-      for (const c of data) {
-        counts.set(c.post_id, (counts.get(c.post_id) || 0) + 1);
-      }
-    }
+    if (data) for (const c of data) counts.set(c.post_id, (counts.get(c.post_id) || 0) + 1);
     return counts;
   }
 
-  async createPost(content: string, authorProfile: Profile) {
+  async createPost(content: string, authorProfile: Profile): Promise<PostWithScore> {
     const supabase = createClient();
     const { data, error } = await supabase
       .from('posts')
       .insert({ author_id: authorProfile.id, content })
       .select()
       .single();
-
     if (error) throw error;
 
-    const newPost: PostWithScore = {
-      ...data,
-      upvotes: 0,
-      downvotes: 0,
-      score: 0,
-      author: authorProfile,
-      user_vote: null,
-      comment_count: 0,
-    };
-
+    const newPost: PostWithScore = { ...data, upvotes: 0, downvotes: 0, score: 0, author: authorProfile, user_vote: null, comment_count: 0 };
     this.posts = [newPost, ...this.posts];
     this.postMap.set(newPost.id, newPost);
+    return newPost;
   }
 
   async votePost(postId: string, voteType: VoteType) {
@@ -136,135 +110,80 @@ class PostsStore {
 
   async fetchComments(postId: string, userId?: string): Promise<CommentWithScore[]> {
     const supabase = createClient();
-
     const { data: commentsData, error } = await supabase
       .from('comment_scores')
       .select('*')
       .eq('post_id', postId)
       .order('created_at', { ascending: true });
-
     if (error) throw error;
 
     const authorIds = [...new Set(commentsData.map(c => c.author_id))];
-    const { data: profiles } = await supabase
-      .from('profiles')
-      .select('*')
-      .in('id', authorIds);
-
+    const { data: profiles } = await supabase.from('profiles').select('*').in('id', authorIds);
     const profileMap = new Map((profiles || []).map(p => [p.id, p]));
 
-    let userVotes: Map<string, 'up' | 'down'> = new Map();
-    if (userId) {
-      const { data: votes } = await supabase
-        .from('votes')
-        .select('comment_id, vote_type')
-        .eq('user_id', userId)
-        .in('comment_id', commentsData.map(c => c.id))
-        .not('comment_id', 'is', null);
-
-      if (votes) {
-        for (const v of votes) {
-          if (v.comment_id) userVotes.set(v.comment_id, v.vote_type as 'up' | 'down');
-        }
-      }
-    }
+    const userVotes = userId ? await this.fetchUserCommentVotes(userId, commentsData.map(c => c.id)) : new Map();
 
     const enriched: CommentWithScore[] = commentsData.map(c => ({
-      ...c,
-      author: profileMap.get(c.author_id) as Profile || {} as Profile,
-      user_vote: userVotes.get(c.id) || null,
-      replies: [],
+      ...c, author: (profileMap.get(c.author_id) || {}) as Profile, user_vote: userVotes.get(c.id) || null, replies: [],
     }));
 
     const map = new Map<string, CommentWithScore>();
     const roots: CommentWithScore[] = [];
-
     for (const c of enriched) {
       map.set(c.id, c);
-      if (!c.parent_id) {
-        roots.push(c);
+      if (c.parent_id) {
+        (map.get(c.parent_id)?.replies || roots).push(c);
       } else {
-        const parent = map.get(c.parent_id);
-        if (parent) parent.replies.push(c);
-        else roots.push(c);
+        roots.push(c);
       }
     }
-
     return roots;
   }
 
-  async addComment(postId: string, content: string, authorProfile: Profile, parentId?: string): Promise<CommentWithScore | null> {
+  private async fetchUserCommentVotes(userId: string, commentIds: string[]): Promise<Map<string, 'up' | 'down'>> {
+    if (commentIds.length === 0) return new Map();
     const supabase = createClient();
-    const commentData: Partial<CommentRow> = {
-      post_id: postId,
-      author_id: authorProfile.id,
-      content,
-    };
-    if (parentId) commentData.parent_id = parentId;
+    const { data } = await supabase
+      .from('votes')
+      .select('comment_id, vote_type')
+      .eq('user_id', userId)
+      .in('comment_id', commentIds)
+      .not('comment_id', 'is', null);
+    const map = new Map<string, 'up' | 'down'>();
+    if (data) for (const v of data) { if (v.comment_id) map.set(v.comment_id, v.vote_type as 'up' | 'down'); }
+    return map;
+  }
 
+  async addComment(postId: string, content: string, authorProfile: Profile, parentId?: string): Promise<CommentWithScore> {
+    const supabase = createClient();
     const { data, error } = await supabase
       .from('comments')
-      .insert(commentData)
+      .insert({ post_id: postId, author_id: authorProfile.id, content, ...(parentId ? { parent_id: parentId } : {}) })
       .select()
       .single();
-
     if (error) throw error;
 
-    // Update comment count
     const post = this.postMap.get(postId);
     if (post) post.comment_count++;
 
-    return {
-      ...data,
-      upvotes: 0,
-      downvotes: 0,
-      score: 0,
-      author: authorProfile,
-      user_vote: null,
-      replies: [],
-    };
+    return { ...data, upvotes: 0, downvotes: 0, score: 0, author: authorProfile, user_vote: null, replies: [] };
+  }
+
+  /** Insert a new comment into an existing comment tree by parent id */
+  insertReplyIntoTree(comments: CommentWithScore[], newComment: CommentWithScore, parentId: string): boolean {
+    function findParent(nodes: CommentWithScore[]): boolean {
+      for (const n of nodes) {
+        if (n.id === parentId) { n.replies = [...n.replies, newComment]; return true; }
+        if (n.replies.length && findParent(n.replies)) return true;
+      }
+      return false;
+    }
+    return findParent(comments);
   }
 
   async voteComment(commentId: string, voteType: VoteType) {
     const supabase = createClient();
     await supabase.rpc('vote_comment', { p_comment_id: commentId, p_vote_type: voteType });
-  }
-
-  subscribeToVotes(postId: string, callback: () => void) {
-    const supabase = createClient();
-    const channel = supabase
-      .channel(`votes:${postId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'votes',
-          filter: `post_id=eq.${postId}`,
-        },
-        () => callback()
-      )
-      .subscribe();
-
-    return () => supabase.removeChannel(channel);
-  }
-
-  subscribeToNewPosts(callback: () => void) {
-    const supabase = createClient();
-    const channel = supabase
-      .channel('new-posts')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'posts',
-        },
-        () => callback()
-      )
-      .subscribe();
-
-    return () => supabase.removeChannel(channel);
   }
 }
 

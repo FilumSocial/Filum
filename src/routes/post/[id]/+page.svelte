@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import ThreadView from '$lib/components/ThreadView.svelte';
   import { auth } from '$lib/stores/auth.svelte';
   import { postsStore } from '$lib/stores/posts.svelte';
@@ -17,14 +16,12 @@
     const supabase = createClient();
     const postId = data.id;
 
-    // Fetch post with score
     const { data: postData } = await supabase
       .from('post_scores')
       .select('*')
       .eq('id', postId)
       .single();
-
-    if (!postData) return;
+    if (!postData) { loading = false; return; }
 
     const { data: authorData } = await supabase
       .from('profiles')
@@ -39,24 +36,17 @@
         .select('vote_type')
         .eq('user_id', auth.user.id)
         .eq('post_id', postId)
-        .single();
-
+        .maybeSingle();
       if (voteData) userVote = voteData.vote_type as 'up' | 'down';
     }
-
-    const { data: countData } = await supabase
-      .from('comments')
-      .select('id', { count: 'exact', head: true })
-      .eq('post_id', postId);
 
     post = {
       ...postData,
       author: authorData as Profile,
       user_vote: userVote,
-      comment_count: countData?.length ?? 0,
+      comment_count: 0,
     } as PostWithScore;
 
-    // Fetch comments tree
     comments = await postsStore.fetchComments(postId, auth.user?.id);
     loading = false;
   }
@@ -65,14 +55,11 @@
     if (auth.initialized) loadThread();
   });
 
-  function goBack() {
-    window.location.href = '/';
-  }
+  function goBack() { window.location.href = '/'; }
 
   function votePost(dir: 'up' | 'down') {
     if (!post) return;
     postsStore.votePost(post.id, dir);
-    // Refresh local state from store
     post = postsStore.postMap.get(post.id) || post;
   }
 
@@ -81,18 +68,18 @@
     comments = await postsStore.fetchComments(data.id, auth.user?.id);
   }
 
-  async function addComment(content: string) {
+  async function addComment(content: string): Promise<void> {
     if (!auth.profile || !post) return;
     const newComment = await postsStore.addComment(post.id, content, auth.profile);
-    if (newComment) {
-      comments = [...comments, newComment];
-    }
+    comments = [...comments, newComment];
   }
 
-  async function addReply(parentId: string, content: string) {
+  async function addReply(parentId: string, content: string): Promise<void> {
     if (!auth.profile || !post) return;
-    await postsStore.addComment(post.id, content, auth.profile, parentId);
-    comments = await postsStore.fetchComments(post.id, auth.user?.id);
+    const newComment = await postsStore.addComment(post.id, content, auth.profile, parentId);
+    const inserted = postsStore.insertReplyIntoTree(comments, newComment, parentId);
+    if (!inserted) comments = [...comments, newComment];
+    comments = comments; // trigger reactivity
   }
 </script>
 
