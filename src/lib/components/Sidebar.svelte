@@ -1,5 +1,6 @@
 <script lang="ts">
   import Avatar from './Avatar.svelte';
+  import { auth } from '$lib/stores/auth.svelte';
   import type { Profile } from '$lib/types';
 
   let {
@@ -52,6 +53,9 @@
         <div class="text-[13px] font-medium">{userProfile.display_name}</div>
         <div class="text-[11px] text-[var(--text3)]">@{userProfile.username}</div>
       </div>
+      <button class="logout-btn" onclick={() => auth.signOut()} title="Sign out">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3"/><path d="M11 11l3-3-3-3"/><path d="M14 8H6"/></svg>
+      </button>
     </div>
   {:else}
     <a href="/login" class="sign-in-btn">Sign in</a>
@@ -112,6 +116,23 @@
     align-items: center;
     gap: 10px;
     padding: 8px 10px;
+  }
+  .logout-btn {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s, background 0.15s;
+  }
+  .logout-btn:hover {
+    color: var(--accent);
+    background: var(--accent-soft);
   }
   .sign-in-btn {
     display: block;

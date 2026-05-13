@@ -150,7 +150,11 @@ CREATE POLICY "Users can unfollow"
   ON follows FOR DELETE
   USING (auth.uid() = follower_id);
 
--- 6. Helper views for scores
+-- 6. Table-level grants for API roles (required before RLS can take effect)
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO anon, authenticated;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated;
+
+-- 7. Helper views for scores
 CREATE VIEW post_scores AS
 SELECT
   p.id,
@@ -179,7 +183,11 @@ FROM comments c
 LEFT JOIN votes v ON v.comment_id = c.id
 GROUP BY c.id;
 
--- 7. Enable Realtime for live updates
+-- 7. Grant SELECT on views (PostgREST requires explicit grants for views)
+GRANT SELECT ON post_scores TO anon, authenticated;
+GRANT SELECT ON comment_scores TO anon, authenticated;
+
+-- 8. Enable Realtime for live updates
 ALTER PUBLICATION supabase_realtime ADD TABLE posts;
 ALTER PUBLICATION supabase_realtime ADD TABLE comments;
 ALTER PUBLICATION supabase_realtime ADD TABLE votes;
@@ -235,11 +243,12 @@ END;
 $$;
 
 -- Function: create profile on signup
+-- FIXED: search_path = 'public' so unqualified "profiles" resolves
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS trigger
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = ''
+SET search_path = 'public'
 AS $$
 BEGIN
   INSERT INTO profiles (id, username, display_name, avatar_color)
