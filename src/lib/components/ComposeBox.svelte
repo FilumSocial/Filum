@@ -74,7 +74,7 @@
 
 <style>
   .compose {
-    margin: 12px 12px 24px;
+    margin: 24px 12px 24px;
     padding: 14px 20px;
     display: flex;
     gap: 11px;

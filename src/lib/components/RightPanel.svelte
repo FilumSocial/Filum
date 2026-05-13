@@ -47,6 +47,10 @@
   .right {
     width: 260px;
     flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
     padding: 20px 14px;
   }
   .panel {

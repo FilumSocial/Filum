@@ -66,6 +66,7 @@
     position: sticky;
     top: 0;
     height: 100vh;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     /* Base layer — darkest */
