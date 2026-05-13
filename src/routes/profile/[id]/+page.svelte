@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import Avatar from '$lib/components/Avatar.svelte';
   import PostCard from '$lib/components/PostCard.svelte';
   import { auth } from '$lib/stores/auth.svelte';
@@ -89,7 +90,7 @@
   }
 
   function openThread(id: string) {
-    window.location.href = `/post/${id}`;
+    goto(`/post/${id}`);
   }
 
   function votePost(id: string, dir: 'up' | 'down') {

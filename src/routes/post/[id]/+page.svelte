@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import ThreadView from '$lib/components/ThreadView.svelte';
   import { auth } from '$lib/stores/auth.svelte';
   import { postsStore } from '$lib/stores/posts.svelte';
@@ -60,7 +61,7 @@
     if (auth.initialized) loadThread();
   });
 
-  function goBack() { window.location.href = '/'; }
+  function goBack() { goto('/'); }
 
   function votePost(dir: 'up' | 'down') {
     if (!post) return;

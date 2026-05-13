@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import Avatar from './Avatar.svelte';
   import VoteRow from './VoteRow.svelte';
   import CommentNode from './CommentNode.svelte';
@@ -34,7 +35,7 @@
   </div>
 
   <div class="full-post">
-    <button class="user-btn flex gap-3 mb-4 items-center" onclick={() => window.location.href = `/profile/${post.author.id}`}>
+    <button class="user-btn flex gap-3 mb-4 items-center" onclick={() => goto(`/profile/${post.author.id}`)}>
       <Avatar name={post.author.display_name} color={post.author.avatar_color} size={42} />
       <div class="text-left">
         <div class="font-semibold text-[15px] hover:underline leading-tight">{post.author.display_name}</div>
@@ -44,7 +45,7 @@
     <div style="padding: 16px 0">
       <p class="text-[17px] leading-relaxed text-[var(--text1)] whitespace-pre-wrap">{post.content}</p>
     </div>
-    <div class="-mx-1">
+    <div>
       <VoteRow
         upvotes={post.upvotes}
         downvotes={post.downvotes}
@@ -55,7 +56,7 @@
   </div>
 
   {#if userProfile}
-    <div class="border-b border-[var(--border)]">
+    <div style="margin: 0 12px 10px;">
       <ComposeBox
         profile={userProfile}
         placeholder="Write a comment..."
@@ -113,8 +114,11 @@
     box-shadow: var(--shadow-s);
   }
   .full-post {
+    margin: 8px 12px 10px;
     padding: 18px 20px;
-    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow-s);
   }
   .slide-in {
     animation: slideIn 0.18s ease forwards;

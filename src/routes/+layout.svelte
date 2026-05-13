@@ -4,6 +4,7 @@
   import RightPanel from '$lib/components/RightPanel.svelte';
   import { auth } from '$lib/stores/auth.svelte';
   import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
 
   let { children } = $props();
 
@@ -23,15 +24,14 @@
   $effect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     function update() { document.body.classList.toggle('light', !mq.matches); }
-    update();
     mq.addEventListener('change', update);
     return () => mq.removeEventListener('change', update);
   });
 
   function handleNavigate(page: string) {
-    if (page === 'home') window.location.href = '/';
-    else if (page === 'explore') window.location.href = '/explore';
-    else if (page === 'profile' && auth.profile) window.location.href = `/profile/${auth.profile.id}`;
+    if (page === 'home') goto('/');
+    else if (page === 'explore') goto('/explore');
+    else if (page === 'profile' && auth.profile) goto(`/profile/${auth.profile.id}`);
   }
 </script>
 

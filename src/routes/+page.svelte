@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import FeedView from '$lib/components/FeedView.svelte';
   import { auth } from '$lib/stores/auth.svelte';
   import { postsStore } from '$lib/stores/posts.svelte';
@@ -34,7 +35,7 @@
   let profile = $derived(auth.profile);
 
   function openThread(id: string) {
-    window.location.href = `/post/${id}`;
+    goto(`/post/${id}`);
   }
 
   function votePost(id: string, dir: 'up' | 'down') {

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import Avatar from './Avatar.svelte';
   import VoteRow from './VoteRow.svelte';
   import { ago } from '$lib/utils';
@@ -24,7 +25,7 @@
   tabindex="0"
   onkeydown={(e) => { if (e.key === 'Enter') onClick(); }}
 >
-    <button class="user-row" onclick={(e) => { e.stopPropagation(); window.location.href = `/profile/${post.author.id}`; }}>
+    <button class="user-row" onclick={(e) => { e.stopPropagation(); goto(`/profile/${post.author.id}`); }}>
       <Avatar name={post.author.display_name} color={post.author.avatar_color} size={38} />
       <div class="flex-1 min-w-0 text-left">
         <div class="flex items-center gap-1.5 flex-wrap">
@@ -59,14 +60,19 @@
 
 <style>
   .pcard {
+    margin: 0 12px 10px;
     padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s, box-shadow 0.15s;
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow-s);
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+  .pcard:first-of-type {
+    margin-top: 8px;
   }
   .pcard:hover {
-    background: oklch(1 0 0 / 0.015);
-    box-shadow: var(--shadow-s);
-    position: relative;
+    box-shadow: var(--shadow-m);
+    transform: translateY(-1px);
   }
   .post-content {
     font-size: 15px;

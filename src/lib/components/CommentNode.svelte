@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import Avatar from './Avatar.svelte';
   import VoteRow from './VoteRow.svelte';
   import CommentNode from './CommentNode.svelte';
@@ -36,15 +37,15 @@
 
 <div class="cmt">
   <div class="cmt-meta">
-    <button class="user-btn" onclick={() => window.location.href = `/profile/${comment.author.id}`}>
-      <Avatar name={comment.author.display_name} color={comment.author.avatar_color} size={27} />
-    </button>
-    <button class="user-btn" onclick={() => window.location.href = `/profile/${comment.author.id}`}>
-      <span class="font-semibold text-[13px] text-[var(--text1)] hover:underline">{comment.author.display_name}</span>
-    </button>
-    <button class="user-btn" onclick={() => window.location.href = `/profile/${comment.author.id}`}>
-      <span class="text-[12px] text-[var(--text3)]">@{comment.author.username}</span>
-    </button>
+      <button class="user-btn" onclick={() => goto(`/profile/${comment.author.id}`)}>
+        <Avatar name={comment.author.display_name} color={comment.author.avatar_color} size={27} />
+      </button>
+      <button class="user-btn" onclick={() => goto(`/profile/${comment.author.id}`)}>
+        <span class="font-semibold text-[13px] text-[var(--text1)] hover:underline">{comment.author.display_name}</span>
+      </button>
+      <button class="user-btn" onclick={() => goto(`/profile/${comment.author.id}`)}>
+        <span class="text-[12px] text-[var(--text3)]">@{comment.author.username}</span>
+      </button>
     <span class="text-[12px] text-[var(--text3)] ml-auto">{ago(comment.created_at)}</span>
     {#if comment.replies.length > 0}
       <button

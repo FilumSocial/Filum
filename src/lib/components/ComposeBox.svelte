@@ -74,12 +74,17 @@
 
 <style>
   .compose {
+    margin: 0 12px 10px;
     padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
     display: flex;
     gap: 11px;
     align-items: flex-start;
-    background: var(--bg-raised);
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow-s);
+  }
+  .compose:first-of-type {
+    margin-top: 8px;
   }
   .compose-ta {
     width: 100%;

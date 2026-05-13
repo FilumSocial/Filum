@@ -67,7 +67,7 @@
       onSubmit={onNewPost}
     />
   {:else}
-    <div class="compose">
+    <div class="compose-empty">
       <div class="w-full text-center py-4">
         <p class="text-[var(--text2)] text-[14px] mb-2">Sign in to join the conversation</p>
         <a href="/login" class="inline-block px-5 py-2 rounded-[8px] bg-[var(--accent)] text-[oklch(0.06_0_0)] font-semibold text-[13px] no-underline hover:opacity-87 transition-opacity">Sign in</a>
@@ -80,7 +80,7 @@
   {/if}
 
   {#if posts.length === 0}
-    <div class="text-[var(--text3)] text-center py-[60px] px-5 text-[14px]">
+    <div class="empty-card">
       {feedMode === 'following' ? 'No posts yet. Follow more people!' : 'No recommended posts yet.'}
     </div>
   {:else}
@@ -96,12 +96,31 @@
 
 <style>
   .error-banner {
-    margin: 8px 16px;
+    margin: 8px 12px;
     padding: 10px 14px;
     background: rgba(224, 112, 112, 0.12);
     color: oklch(0.65 0.16 25);
     border-radius: 8px;
     font-size: 13px;
+  }
+
+  .compose-empty {
+    margin: 0 12px 10px;
+    padding: 14px 20px;
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow-s);
+  }
+  .compose-empty:first-of-type {
+    margin-top: 8px;
+  }
+
+  .empty-card {
+    margin: 0 12px;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text3);
+    font-size: 14px;
   }
 
   .sticky-hd {

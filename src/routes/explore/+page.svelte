@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
   import PostCard from '$lib/components/PostCard.svelte';
   import { auth } from '$lib/stores/auth.svelte';
   import { postsStore } from '$lib/stores/posts.svelte';
@@ -19,7 +19,7 @@
   });
 
   function openThread(id: string) {
-    window.location.href = `/post/${id}`;
+    goto(`/post/${id}`);
   }
 
   function votePost(id: string, dir: 'up' | 'down') {
@@ -68,10 +68,9 @@
 <style>
   .sticky-hd {
     padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
-    background: rgba(12, 11, 10, 0.93);
+    background: var(--bg-glass);
     backdrop-filter: blur(14px);
     z-index: 20;
   }
