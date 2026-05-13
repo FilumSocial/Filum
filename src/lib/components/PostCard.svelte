@@ -72,7 +72,7 @@
     font-size: 15px;
     line-height: 1.6;
     color: var(--text1);
-    margin: 4px 0 14px 0;
+    margin: 6px 0 16px 0;
     white-space: pre-wrap;
   }
   .following-badge {

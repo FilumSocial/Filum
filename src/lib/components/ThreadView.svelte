@@ -41,7 +41,7 @@
         <div class="text-[12px] text-[var(--text3)] leading-tight">@{post.author.username} &middot; {ago(post.created_at)}</div>
       </div>
     </button>
-    <p class="text-[17px] leading-relaxed text-[var(--text1)] my-4 whitespace-pre-wrap">{post.content}</p>
+    <p class="text-[17px] leading-relaxed text-[var(--text1)] my-6 whitespace-pre-wrap">{post.content}</p>
     <div class="-mx-1">
       <VoteRow
         upvotes={post.upvotes}
