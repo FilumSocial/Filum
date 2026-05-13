@@ -6,7 +6,7 @@
   import { createClient } from '$lib/supabase/client';
   import type { Profile, PostWithScore } from '$lib/types';
 
-  let { data }: { data: { id: string } } = $props();
+  let { params } = $props();
 
   let profile = $state<Profile | null>(null);
   let userPosts = $state<PostWithScore[]>([]);
@@ -18,7 +18,7 @@
     const { data: profileData } = await supabase
       .from('profiles')
       .select('*')
-      .eq('id', data.id)
+      .eq('id', params.id)
       .single();
 
     if (profileData) {
@@ -30,7 +30,7 @@
           .from('follows')
           .select('id')
           .eq('follower_id', auth.profile.id)
-          .eq('following_id', data.id)
+          .eq('following_id', params.id)
           .single();
         isFollowing = !!followData;
       }
@@ -39,7 +39,7 @@
       const { data: postData } = await supabase
         .from('post_scores')
         .select('*')
-        .eq('author_id', data.id)
+        .eq('author_id', params.id)
         .order('created_at', { ascending: false });
 
       if (postData) {
