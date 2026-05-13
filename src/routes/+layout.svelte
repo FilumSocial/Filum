@@ -9,8 +9,23 @@
 
   let isAuthPage = $derived($page.url.pathname.startsWith('/login') || $page.url.pathname.startsWith('/register'));
 
+  let currentPage = $derived(
+    $page.url.pathname === '/' ? 'home' :
+    $page.url.pathname.startsWith('/explore') ? 'explore' :
+    $page.url.pathname.startsWith('/profile') ? 'profile' :
+    ''
+  );
+
   $effect(() => {
     if (!auth.initialized) auth.init();
+  });
+
+  $effect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    function update() { document.body.classList.toggle('light', !mq.matches); }
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
   });
 
   function handleNavigate(page: string) {
@@ -31,7 +46,7 @@
   <div class="shell">
     <Sidebar
       userProfile={auth.profile}
-      currentPage="home"
+      {currentPage}
       onNavigate={handleNavigate}
     />
     <main class="main">

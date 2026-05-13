@@ -108,7 +108,7 @@
     padding: 14px 20px 12px;
     position: sticky;
     top: 0;
-    background: oklch(0.065 0.006 55 / 0.92);
+    background: var(--bg-glass);
     backdrop-filter: blur(14px);
     z-index: 20;
     box-shadow:

@@ -69,7 +69,7 @@
   }
   .vote-btn.up.on {
     color: var(--up);
-    background: var(--accent-soft);
+    background: var(--up-soft);
   }
   .vote-btn.down.on {
     color: var(--down);

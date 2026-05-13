@@ -4,11 +4,11 @@ const supabase = createClient('http://127.0.0.1:54321', 'SUPABASE_ANON_KEY');
 const admin = createClient('http://127.0.0.1:54321', 'SUPABASE_SERVICE_ROLE_KEY');
 
 const users = [
-  { email: 'mia@example.com', password: 'password123', username: 'miahoff', display_name: 'Mia Hoffmann', avatar_color: '#6FCF97', bio: 'Building things' },
-  { email: 'jonas@example.com', password: 'password123', username: 'jonskern', display_name: 'Jonas Kern', avatar_color: '#2FA084', bio: 'UX & Design' },
-  { email: 'sara@example.com', password: 'password123', username: 'saravoss', display_name: 'Sara Voss', avatar_color: '#1F6F5F', bio: 'Full-stack dev' },
-  { email: 'tobias@example.com', password: 'password123', username: 'tobiauer', display_name: 'Tobias Auer', avatar_color: '#4DB893', bio: 'Infrastructure' },
-  { email: 'lena@example.com', password: 'password123', username: 'lenabraun', display_name: 'Lena Braun', avatar_color: '#58B5A0', bio: 'Product thinker' },
+  { email: 'mia@example.com', password: 'password123', username: 'miahoff', display_name: 'Mia Hoffmann', avatar_color: '#8C00FF', bio: 'Building things' },
+  { email: 'jonas@example.com', password: 'password123', username: 'jonskern', display_name: 'Jonas Kern', avatar_color: '#FF3F7F', bio: 'UX & Design' },
+  { email: 'sara@example.com', password: 'password123', username: 'saravoss', display_name: 'Sara Voss', avatar_color: '#FFC400', bio: 'Full-stack dev' },
+  { email: 'tobias@example.com', password: 'password123', username: 'tobiauer', display_name: 'Tobias Auer', avatar_color: '#450693', bio: 'Infrastructure' },
+  { email: 'lena@example.com', password: 'password123', username: 'lenabraun', display_name: 'Lena Braun', avatar_color: '#CC44AA', bio: 'Product thinker' },
 ];
 
 const ids: Record<string, string> = {};
