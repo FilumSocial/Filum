@@ -21,7 +21,7 @@
 </script>
 
 <svelte:head>
-  <link rel="icon" href="/favicon.png" />
+  <link rel="icon" href="/favicon.svg" />
   <title>Filum</title>
 </svelte:head>
 
