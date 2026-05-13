@@ -34,15 +34,15 @@
   </div>
 
   <div class="full-post">
-    <button class="user-btn flex gap-3 mb-3 items-start" onclick={() => window.location.href = `/profile/${post.author.id}`}>
+    <button class="user-btn flex gap-3 mb-4 items-center" onclick={() => window.location.href = `/profile/${post.author.id}`}>
       <Avatar name={post.author.display_name} color={post.author.avatar_color} size={42} />
       <div class="text-left">
-        <div class="font-semibold text-[15px] hover:underline">{post.author.display_name}</div>
-        <div class="text-[13px] text-[var(--text3)]">@{post.author.username} &middot; {ago(post.created_at)}</div>
+        <div class="font-semibold text-[15px] hover:underline leading-tight">{post.author.display_name}</div>
+        <div class="text-[12px] text-[var(--text3)] leading-tight">@{post.author.username} &middot; {ago(post.created_at)}</div>
       </div>
     </button>
-    <p class="text-[17px] leading-relaxed text-[var(--text1)] mb-3.5 whitespace-pre-wrap">{post.content}</p>
-    <div class="mt-3 -mx-1">
+    <p class="text-[17px] leading-relaxed text-[var(--text1)] mb-4 whitespace-pre-wrap">{post.content}</p>
+    <div class="-mx-1">
       <VoteRow
         upvotes={post.upvotes}
         downvotes={post.downvotes}
