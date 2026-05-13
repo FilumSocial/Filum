@@ -1,8 +1,28 @@
 import { createClient } from '@supabase/supabase-js';
 
+/*
+  Seeds auth users and demo content via the GoTrue API (for local dev).
+  For production, use supabase/seed.sql in the Supabase dashboard SQL editor instead.
+
+  Prerequisites:
+    1. `supabase start` running
+    2. Set env vars (use .env — already gitignored):
+         SUPABASE_URL                  (defaults to http://127.0.0.1:54321)
+         VITE_SUPABASE_PUBLISHABLE_KEY (from .env or SUPABASE_ANON_KEY)
+         SUPABASE_SERVICE_ROLE_KEY     ("Secret" key from `supabase status` — never commit)
+
+  Usage:
+    bun run scripts/seed.ts
+*/
+
 const supabaseUrl = process.env.SUPABASE_URL || 'http://127.0.0.1:54321';
 const anonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+
+if (!serviceKey) {
+  console.error('Missing SUPABASE_SERVICE_ROLE_KEY. Run `supabase status` and copy the service_role key into .env');
+  process.exit(1);
+}
 
 const supabase = createClient(supabaseUrl, anonKey);
 const admin = createClient(supabaseUrl, serviceKey);

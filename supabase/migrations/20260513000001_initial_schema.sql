@@ -2,6 +2,8 @@
 -- Migration: 001
 -- Auto-applied by Supabase CLI / Dashboard on project setup
 
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
+
 -- 1. Profiles (extends auth.users)
 CREATE TABLE IF NOT EXISTS profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,

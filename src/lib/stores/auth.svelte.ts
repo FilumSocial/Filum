@@ -40,21 +40,31 @@ class AuthStore {
 
   async #loadProfile(userId: string) {
     try {
-      const { data } = await this.#supabase
+      const { data, error } = await this.#supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
+      if (error) {
+        console.error('Profile load error:', error.message);
+        return;
+      }
       if (data) this.profile = data as Profile;
     } catch (e) {
-      // profile might not exist yet if trigger hasn't run
-      console.error('Profile load error:', e);
+      console.error('Profile load exception:', e);
     }
   }
 
   async signIn(email: string, password: string) {
     const { error } = await this.#supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
+
+    const { data: { session } } = await this.#supabase.auth.getSession();
+    if (session?.user) {
+      this.user = { id: session.user.id, email: session.user.email };
+      await this.#loadProfile(session.user.id);
+    }
+
     await goto('/');
   }
 
