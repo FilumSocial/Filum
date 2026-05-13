@@ -189,9 +189,10 @@ CREATE OR REPLACE FUNCTION vote_post(p_post_id UUID, p_vote_type TEXT)
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = 'public'
 AS $$
 DECLARE
-  existing vote_type TEXT;
+  existing TEXT;
 BEGIN
   SELECT vote_type INTO existing FROM votes
   WHERE user_id = auth.uid() AND post_id = p_post_id;
@@ -213,9 +214,10 @@ CREATE OR REPLACE FUNCTION vote_comment(p_comment_id UUID, p_vote_type TEXT)
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = 'public'
 AS $$
 DECLARE
-  existing vote_type TEXT;
+  existing TEXT;
 BEGIN
   SELECT vote_type INTO existing FROM votes
   WHERE user_id = auth.uid() AND comment_id = p_comment_id;
@@ -251,7 +253,8 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE TRIGGER on_auth_user_created
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW
   EXECUTE FUNCTION handle_new_user();
