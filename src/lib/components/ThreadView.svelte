@@ -41,7 +41,7 @@
         <div class="text-[12px] text-[var(--text3)] leading-tight">@{post.author.username} &middot; {ago(post.created_at)}</div>
       </div>
     </button>
-    <div style="padding: 20px 0">
+    <div style="padding: 16px 0">
       <p class="text-[17px] leading-relaxed text-[var(--text1)] whitespace-pre-wrap">{post.content}</p>
     </div>
     <div class="-mx-1">
