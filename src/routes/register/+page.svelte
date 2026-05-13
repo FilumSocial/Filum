@@ -96,7 +96,7 @@
   }
   .auth-card {
     background: var(--surface);
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 32px;
     width: 100%;
     max-width: 380px;

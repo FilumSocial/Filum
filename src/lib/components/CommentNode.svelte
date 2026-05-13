@@ -52,7 +52,7 @@
         style="color: {color}"
         onclick={() => collapsed = !collapsed}
       >
-        {collapsed ? `\u25B6 ${comment.replies.length}` : '\u25BC'}
+        {collapsed ? `+${comment.replies.length}` : '-'}
       </button>
     {/if}
   </div>
@@ -144,7 +144,7 @@
     margin-top: 8px;
     padding: 10px 12px;
     background: var(--surface2);
-    border-radius: 10px;
+    border-radius: 8px;
     border: 1px solid var(--border);
   }
   .reply-ta {
@@ -178,7 +178,7 @@
     gap: 5px;
     padding: 5px 8px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     background: transparent;
     color: var(--text2);
     font-size: 13px;
@@ -192,7 +192,7 @@
   .sm-post-btn {
     padding: 5px 13px;
     border: none;
-    border-radius: 14px;
+    border-radius: 8px;
     background: var(--accent);
     color: oklch(0.06 0 0);
     font-family: 'DM Sans', sans-serif;
@@ -207,7 +207,7 @@
   .cancel-btn {
     padding: 5px 13px;
     border: none;
-    border-radius: 14px;
+    border-radius: 8px;
     background: var(--surface2);
     color: var(--text2);
     font-family: 'DM Sans', sans-serif;

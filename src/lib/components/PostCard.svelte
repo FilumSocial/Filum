@@ -48,11 +48,11 @@
       onVote={onVote}
     />
     <button class="act-btn" onclick={(e) => { e.stopPropagation(); }}>
-      <span class="text-[14px] leading-none">&#128172;</span>
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 1h11a1 1 0 011 1v8a1 1 0 01-1 1H5l-3 3V2a1 1 0 011-1z"/></svg>
       <span class="text-[13px]">{post.comment_count}</span>
     </button>
-    <button class="act-btn" onclick={(e) => { e.stopPropagation(); }}>
-      <span class="text-[14px] leading-none">&#8599;</span>
+    <button class="act-btn" aria-label="Share" onclick={(e) => { e.stopPropagation(); }}>
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="4" cy="7.5" r="2"/><circle cx="11" cy="4.5" r="2"/><circle cx="11" cy="10.5" r="2"/><path d="M6 8.5l3 2M9 4.5l-3 2"/></svg>
     </button>
   </div>
 </div>
@@ -89,7 +89,7 @@
     gap: 5px;
     padding: 5px 8px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     background: transparent;
     color: var(--text2);
     font-size: 13px;

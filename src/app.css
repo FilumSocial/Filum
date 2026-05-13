@@ -9,13 +9,13 @@
 }
 
 :root {
-  /* Neutral palette — deep purple-tinted */
-  --bg:        oklch(0.07 0.015 290);
-  --bg-raised: oklch(0.10 0.02 290);
-  --surface:   oklch(0.14 0.025 290);
-  --surface2:  oklch(0.18 0.03 290);
-  --border:    oklch(0.22 0.025 290);
-  --bg-glass:  oklch(0.07 0.015 290 / 0.92);
+  /* Neutral palette — pure gray */
+  --bg:        oklch(0.07 0 0);
+  --bg-raised: oklch(0.105 0 0);
+  --surface:   oklch(0.145 0 0);
+  --surface2:  oklch(0.185 0 0);
+  --border:    oklch(0.225 0 0);
+  --bg-glass:  oklch(0.07 0 0 / 0.92);
 
   /* Text */
   --text1: oklch(0.94 0 0);
@@ -25,10 +25,10 @@
   /* Brand */
   --accent:      oklch(0.52 0.30 295);
   --accent-soft: oklch(0.52 0.30 295 / 0.15);
-  --up:          oklch(0.80 0.18 85);
-  --up-soft:     oklch(0.80 0.18 85 / 0.12);
-  --down:        oklch(0.60 0.24 355);
-  --down-soft:   oklch(0.60 0.24 355 / 0.12);
+  --up:          oklch(0.76 0.14 155);
+  --up-soft:     oklch(0.76 0.14 155 / 0.12);
+  --down:        oklch(0.62 0.20 25);
+  --down-soft:   oklch(0.62 0.20 25 / 0.12);
 
   /* Triple-layer shadows */
   --shadow-s:
@@ -49,12 +49,12 @@
 }
 
 body.light {
-  --bg:        oklch(0.93 0.015 290);
-  --bg-raised: oklch(0.90 0.02 290);
-  --surface:   oklch(0.86 0.025 290);
-  --surface2:  oklch(0.82 0.03 290);
-  --border:    oklch(0.78 0.025 290);
-  --bg-glass:  oklch(0.93 0.015 290 / 0.92);
+  --bg:        oklch(0.93 0 0);
+  --bg-raised: oklch(0.90 0 0);
+  --surface:   oklch(0.86 0 0);
+  --surface2:  oklch(0.82 0 0);
+  --border:    oklch(0.78 0 0);
+  --bg-glass:  oklch(0.93 0 0 / 0.92);
 
   --text1: oklch(0.06 0 0);
   --text2: oklch(0.30 0 0);
@@ -130,7 +130,7 @@ body.light::after {
 .shell {
   display: flex;
   min-height: 100vh;
-  max-width: 1080px;
+  max-width: 1280px;
   margin: 0 auto;
 }
 

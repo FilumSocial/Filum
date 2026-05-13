@@ -154,7 +154,7 @@
   .follow-btn {
     padding: 6px 16px;
     border: 1px solid var(--accent);
-    border-radius: 18px;
+    border-radius: 8px;
     background: transparent;
     color: var(--accent);
     font-family: 'DM Sans', sans-serif;

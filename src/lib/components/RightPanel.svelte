@@ -39,7 +39,7 @@
   </div>
 
   <div class="text-[11px] text-[var(--text3)] leading-relaxed">
-    Filum &middot; Beta &middot; Made with &#9650;&#9660;
+    Filum &middot; Beta
   </div>
 </aside>
 
@@ -51,7 +51,7 @@
   }
   .panel {
     background: var(--surface);
-    border-radius: 14px;
+    border-radius: 12px;
     padding: 16px;
     margin-bottom: 16px;
     box-shadow: var(--shadow-s);
@@ -83,7 +83,7 @@
   .follow-btn {
     padding: 5px 12px;
     border: 1px solid var(--accent);
-    border-radius: 14px;
+    border-radius: 8px;
     background: transparent;
     color: var(--accent);
     font-family: 'DM Sans', sans-serif;

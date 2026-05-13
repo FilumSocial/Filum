@@ -13,10 +13,22 @@
   } = $props();
 
   const navItems = [
-    { id: 'home', icon: '\u2302', label: 'Home' },
-    { id: 'explore', icon: '\u25CB', label: 'Explore' },
-    { id: 'notif', icon: '\uD83D\uDD14', label: 'Notifications' },
-    { id: 'profile', icon: '\u25EF', label: 'Profile' },
+    {
+      id: 'home', label: 'Home',
+      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8l7-6 7 6v8a1 1 0 01-1 1H3a1 1 0 01-1-1V8z"/><path d="M6 15V9h6v6"/></svg>',
+    },
+    {
+      id: 'explore', label: 'Explore',
+      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="7"/><path d="M6 12l2-5 5-2-2 5-5 2z"/></svg>',
+    },
+    {
+      id: 'notif', label: 'Notifications',
+      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 7a4 4 0 00-8 0c0 3-1 5-2 6h12c-1-1-2-3-2-6"/><path d="M7.5 15a1.5 1.5 0 003 0"/></svg>',
+    },
+    {
+      id: 'profile', label: 'Profile',
+      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="6" r="3"/><path d="M3 16c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>',
+    },
   ];
 </script>
 
@@ -28,7 +40,7 @@
       class:active={currentPage === item.id}
       onclick={() => onNavigate(item.id)}
     >
-      <span class="text-[17px]">{item.icon}</span>
+      {@html item.icon}
       {item.label}
     </button>
   {/each}
@@ -74,7 +86,7 @@
     width: 100%;
     padding: 9px 10px;
     border: none;
-    border-radius: 9px;
+    border-radius: 8px;
     background: transparent;
     color: var(--text2);
     font-family: 'DM Sans', sans-serif;
@@ -103,7 +115,7 @@
     display: block;
     text-align: center;
     padding: 9px 10px;
-    border-radius: 9px;
+    border-radius: 8px;
     background: var(--accent);
     color: oklch(0.06 0 0);
     font-size: 14px;

@@ -106,7 +106,7 @@
   .post-btn {
     padding: 7px 18px;
     border: none;
-    border-radius: 18px;
+    border-radius: 8px;
     background: var(--accent);
     color: oklch(0.06 0 0);
     font-family: 'DM Sans', sans-serif;
@@ -132,7 +132,7 @@
   }
   .post-btn.compact {
     padding: 5px 13px;
-    border-radius: 14px;
+    border-radius: 8px;
     font-size: 12px;
   }
   .error-msg {

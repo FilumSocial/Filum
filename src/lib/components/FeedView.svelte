@@ -37,12 +37,12 @@
           class="seg-btn"
           class:on={sortMode === 'chron'}
           onclick={() => onSetSortMode('chron')}
-        >&#9201; New</button>
+        >New</button>
         <button
           class="seg-btn"
           class:on={sortMode === 'top'}
           onclick={() => onSetSortMode('top')}
-        >&#128293; Top</button>
+        >Top</button>
       </div>
     </div>
     <div class="tabs">
@@ -70,7 +70,7 @@
     <div class="compose">
       <div class="w-full text-center py-4">
         <p class="text-[var(--text2)] text-[14px] mb-2">Sign in to join the conversation</p>
-        <a href="/login" class="inline-block px-5 py-2 rounded-full bg-[var(--accent)] text-[oklch(0.06_0_0)] font-semibold text-[13px] no-underline hover:opacity-87 transition-opacity">Sign in</a>
+        <a href="/login" class="inline-block px-5 py-2 rounded-[8px] bg-[var(--accent)] text-[oklch(0.06_0_0)] font-semibold text-[13px] no-underline hover:opacity-87 transition-opacity">Sign in</a>
       </div>
     </div>
   {/if}

@@ -40,12 +40,12 @@
           class="seg-btn"
           class:on={sortMode === 'top'}
           onclick={() => sortMode = 'top'}
-        >&#128293; Top</button>
+        >Top</button>
         <button
           class="seg-btn"
           class:on={sortMode === 'chron'}
           onclick={() => sortMode = 'chron'}
-        >&#9201; New</button>
+        >New</button>
       </div>
     </div>
   </div>
