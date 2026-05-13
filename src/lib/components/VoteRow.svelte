@@ -20,7 +20,7 @@
   <button
     class="vote-btn up"
     class:on={userVote === 'up'}
-    onclick={() => onVote('up')}
+    onclick={(e) => { e.stopPropagation(); onVote('up'); }}
   >
     <span class="text-[14px] leading-none">&#9650;</span>
     {#if !compact}
@@ -39,7 +39,7 @@
   <button
     class="vote-btn down"
     class:on={userVote === 'down'}
-    onclick={() => onVote('down')}
+    onclick={(e) => { e.stopPropagation(); onVote('down'); }}
   >
     <span class="text-[14px] leading-none">&#9660;</span>
     {#if !compact}

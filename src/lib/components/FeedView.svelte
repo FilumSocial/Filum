@@ -6,6 +6,7 @@
   let {
     posts,
     userProfile,
+    error = null,
     feedMode,
     sortMode,
     onSetFeedMode,
@@ -16,6 +17,7 @@
   }: {
     posts: PostWithScore[];
     userProfile: Profile | null;
+    error?: string | null;
     feedMode: FeedMode;
     sortMode: SortMode;
     onSetFeedMode: (mode: FeedMode) => void;
@@ -73,6 +75,10 @@
     </div>
   {/if}
 
+  {#if error}
+    <div class="error-banner">{error}</div>
+  {/if}
+
   {#if posts.length === 0}
     <div class="text-[var(--text3)] text-center py-[60px] px-5 text-[14px]">
       {feedMode === 'following' ? 'No posts yet. Follow more people!' : 'No recommended posts yet.'}
@@ -89,6 +95,15 @@
 </div>
 
 <style>
+  .error-banner {
+    margin: 8px 16px;
+    padding: 10px 14px;
+    background: rgba(224, 112, 112, 0.12);
+    color: #e07070;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
   .sticky-hd {
     padding: 14px 20px;
     border-bottom: 1px solid var(--border);

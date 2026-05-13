@@ -100,7 +100,7 @@ class PostsStore {
       post.user_vote = null;
     } else {
       if (post.user_vote === 'up') { post.upvotes--; post.score--; }
-      if (post.user_vote === 'down') { post.downvotes++; post.score++; }
+      if (post.user_vote === 'down') { post.downvotes--; post.score++; }
       post.score += voteType === 'up' ? 1 : -1;
       post.upvotes += voteType === 'up' ? 1 : 0;
       post.downvotes += voteType === 'down' ? 1 : 0;

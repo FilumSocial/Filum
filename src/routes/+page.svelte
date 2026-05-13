@@ -54,6 +54,7 @@
 <FeedView
   posts={postsStore.posts}
   userProfile={profile}
+  error={postsStore.error}
   {feedMode}
   {sortMode}
   onSetFeedMode={(m) => feedMode = m}

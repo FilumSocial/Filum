@@ -17,17 +17,20 @@
     const postId = data.id;
 
     const { data: postData } = await supabase
-      .from('post_scores')
+      .from('posts')
       .select('*')
       .eq('id', postId)
-      .single();
+      .maybeSingle();
     if (!postData) { loading = false; return; }
 
-    const { data: authorData } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', postData.author_id)
-      .single();
+    const [authorRes, votesRes, commentCountRes] = await Promise.all([
+      supabase.from('profiles').select('*').eq('id', postData.author_id).single(),
+      supabase.from('votes').select('vote_type').eq('post_id', postId),
+      supabase.from('comments').select('id', { count: 'exact', head: true }).eq('post_id', postId),
+    ]);
+
+    const upvotes = votesRes.data?.filter(v => v.vote_type === 'up').length || 0;
+    const downvotes = votesRes.data?.filter(v => v.vote_type === 'down').length || 0;
 
     let userVote: 'up' | 'down' | null = null;
     if (auth.user) {
@@ -42,9 +45,11 @@
 
     post = {
       ...postData,
-      author: authorData as Profile,
+      upvotes, downvotes,
+      score: upvotes - downvotes,
+      author: authorRes.data as Profile,
       user_vote: userVote,
-      comment_count: 0,
+      comment_count: commentCountRes.count || 0,
     } as PostWithScore;
 
     comments = await postsStore.fetchComments(postId, auth.user?.id);

@@ -12,7 +12,6 @@
     loading = true;
     try {
       await auth.signIn(email, password);
-      window.location.href = '/';
     } catch (err) {
       error = err instanceof Error ? err.message : 'Failed to sign in';
     } finally {
@@ -25,7 +24,7 @@
   <div class="auth-card">
     <div class="logo">Filum</div>
     <h1 class="text-xl font-semibold mb-1">Sign in</h1>
-    <p class="text-sm text-[var(--text3)] mb-6">Welcome back to Filum</p>
+    <p class="text-sm text-[var(--text3)] mb-6">Welcome back</p>
 
     <form onsubmit={handleSubmit}>
       {#if error}
