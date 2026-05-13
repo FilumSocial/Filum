@@ -166,6 +166,6 @@
   }
   .follow-btn.following {
     background: var(--accent);
-    color: #0c0b0a;
+    color: oklch(0.06 0 0);
   }
 </style>

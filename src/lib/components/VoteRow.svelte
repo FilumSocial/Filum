@@ -55,17 +55,17 @@
     gap: 5px;
     padding: 5px 8px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     background: transparent;
     color: var(--text2);
     font-family: 'DM Sans', sans-serif;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.1s;
+    transition: background 0.15s, color 0.15s;
   }
   .vote-btn:hover {
-    background: var(--surface2);
+    background: var(--surface);
   }
   .vote-btn.up.on {
     color: var(--up);
@@ -75,12 +75,16 @@
     color: var(--down);
     background: var(--down-soft);
   }
+  .vote-btn:active {
+    transform: scale(0.94);
+  }
   .score {
     font-size: 12px;
     font-weight: 600;
     min-width: 26px;
     text-align: center;
     color: var(--text2);
+    transition: color 0.15s;
   }
   .score.pos {
     color: var(--up);

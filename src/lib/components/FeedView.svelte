@@ -70,7 +70,7 @@
     <div class="compose">
       <div class="w-full text-center py-4">
         <p class="text-[var(--text2)] text-[14px] mb-2">Sign in to join the conversation</p>
-        <a href="/login" class="inline-block px-5 py-2 rounded-full bg-[var(--accent)] text-[#0c0b0a] font-semibold text-[13px] no-underline hover:opacity-87 transition-opacity">Sign in</a>
+        <a href="/login" class="inline-block px-5 py-2 rounded-full bg-[var(--accent)] text-[oklch(0.06_0_0)] font-semibold text-[13px] no-underline hover:opacity-87 transition-opacity">Sign in</a>
       </div>
     </div>
   {/if}
@@ -99,19 +99,21 @@
     margin: 8px 16px;
     padding: 10px 14px;
     background: rgba(224, 112, 112, 0.12);
-    color: #e07070;
+    color: oklch(0.65 0.16 25);
     border-radius: 8px;
     font-size: 13px;
   }
 
   .sticky-hd {
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
+    padding: 14px 20px 12px;
     position: sticky;
     top: 0;
-    background: rgba(12, 11, 10, 0.93);
+    background: oklch(0.065 0.006 55 / 0.92);
     backdrop-filter: blur(14px);
     z-index: 20;
+    box-shadow:
+      inset 0 -1px 0 oklch(1 0 0 / 0.03),
+      0 1px 3px oklch(0 0 0 / 0.2);
   }
   .tabs {
     display: flex;

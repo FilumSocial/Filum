@@ -51,12 +51,13 @@
     width: 210px;
     flex-shrink: 0;
     padding: 20px 12px;
-    border-right: 1px solid var(--border);
     position: sticky;
     top: 0;
     height: 100vh;
     display: flex;
     flex-direction: column;
+    /* Base layer — darkest */
+    background: var(--bg);
   }
   .logo {
     font-family: 'Cormorant Garamond', serif;
@@ -81,15 +82,16 @@
     font-weight: 500;
     cursor: pointer;
     text-align: left;
-    transition: all 0.12s;
+    transition: background 0.15s, color 0.15s;
   }
   .nav-btn:hover {
-    background: var(--surface2);
+    background: var(--surface);
     color: var(--text1);
   }
   .nav-btn.active {
     background: var(--accent-soft);
     color: var(--accent);
+    box-shadow: var(--shadow-inset);
   }
   .user-card {
     display: flex;
@@ -103,14 +105,19 @@
     padding: 9px 10px;
     border-radius: 9px;
     background: var(--accent);
-    color: #0c0b0a;
+    color: oklch(0.06 0 0);
     font-size: 14px;
     font-weight: 600;
     text-decoration: none;
-    transition: opacity 0.12s;
+    transition: opacity 0.15s, transform 0.15s;
+    box-shadow: var(--shadow-s);
   }
   .sign-in-btn:hover {
     opacity: 0.87;
+    transform: scale(1.02);
+  }
+  .sign-in-btn:active {
+    transform: scale(0.96);
   }
 
   @media (max-width: 640px) {

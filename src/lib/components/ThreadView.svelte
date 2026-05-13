@@ -42,7 +42,7 @@
       </div>
     </button>
     <p class="text-[17px] leading-relaxed text-[var(--text1)] mb-3.5 whitespace-pre-wrap">{post.content}</p>
-    <div class="pt-3 border-t border-[var(--border)]">
+    <div class="pt-3 border-t border-[var(--border)] -mx-1">
       <VoteRow
         upvotes={post.upvotes}
         downvotes={post.downvotes}
@@ -86,26 +86,29 @@
 <style>
   .sticky-hd {
     padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
     position: sticky;
     top: 0;
-    background: rgba(12, 11, 10, 0.93);
+    background: oklch(0.065 0.006 55 / 0.92);
     backdrop-filter: blur(14px);
     z-index: 20;
+    box-shadow:
+      inset 0 -1px 0 oklch(1 0 0 / 0.03),
+      0 1px 3px oklch(0 0 0 / 0.2);
   }
   .back-btn {
     padding: 6px 12px;
     border: none;
     border-radius: 8px;
-    background: var(--surface2);
+    background: var(--surface);
     color: var(--text1);
     font-family: 'DM Sans', sans-serif;
     font-size: 13px;
     cursor: pointer;
-    transition: background 0.12s;
+    transition: background 0.15s;
   }
   .back-btn:hover {
-    background: var(--surface3);
+    background: var(--surface2);
+    box-shadow: var(--shadow-s);
   }
   .full-post {
     padding: 18px 20px;

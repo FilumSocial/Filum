@@ -79,6 +79,7 @@
     display: flex;
     gap: 11px;
     align-items: flex-start;
+    background: var(--bg-raised);
   }
   .compose-ta {
     width: 100%;
@@ -107,20 +108,27 @@
     border: none;
     border-radius: 18px;
     background: var(--accent);
-    color: #0c0b0a;
+    color: oklch(0.06 0 0);
     font-family: 'DM Sans', sans-serif;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    transition: opacity 0.12s;
+    transition: opacity 0.15s, transform 0.15s;
     flex-shrink: 0;
+    box-shadow: var(--shadow-s);
   }
   .post-btn:hover {
     opacity: 0.87;
+    transform: scale(1.02);
+  }
+  .post-btn:active {
+    transform: scale(0.96);
   }
   .post-btn:disabled {
     opacity: 0.35;
     cursor: default;
+    transform: none;
+    box-shadow: none;
   }
   .post-btn.compact {
     padding: 5px 13px;
@@ -129,7 +137,7 @@
   }
   .error-msg {
     font-size: 12px;
-    color: #e07070;
+    color: oklch(0.65 0.16 25);
     margin-top: 4px;
   }
 </style>

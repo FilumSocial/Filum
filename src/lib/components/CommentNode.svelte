@@ -23,7 +23,7 @@
   let replying = $state(false);
   let replyText = $state('');
 
-  const depthColors = ['#f2a830', '#7b8fe8', '#5ec47a', '#e07070', '#c07ad8', '#50c4c4'];
+  const depthColors = ['oklch(0.72 0.18 75)', 'oklch(0.62 0.1 260)', 'oklch(0.72 0.14 145)', 'oklch(0.65 0.16 25)', 'oklch(0.62 0.13 310)', 'oklch(0.72 0.1 190)'];
   let color = $derived(depthColors[depth % depthColors.length]);
 
   function submitReply() {
@@ -110,7 +110,7 @@
 
 <style>
   .cmt {
-    padding: 12px 4px;
+    padding: 12px 6px;
   }
   .cmt-meta {
     display: flex;
@@ -125,9 +125,9 @@
     white-space: pre-wrap;
   }
   .replies-wrap {
-    border-left: 2px solid;
-    margin-left: 16px;
-    padding-left: 20px;
+    border-left: 2px solid oklch(1 0 0 / 0.08);
+    margin-left: 14px;
+    padding-left: 16px;
     margin-top: 4px;
   }
   .user-btn {
@@ -194,7 +194,7 @@
     border: none;
     border-radius: 14px;
     background: var(--accent);
-    color: #0c0b0a;
+    color: oklch(0.06 0 0);
     font-family: 'DM Sans', sans-serif;
     font-size: 12px;
     font-weight: 600;

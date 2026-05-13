@@ -50,10 +50,11 @@
     padding: 20px 14px;
   }
   .panel {
-    background: var(--surface2);
-    border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 14px;
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-s);
   }
   .panel-title {
     font-size: 11px;
@@ -67,7 +68,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 0;
+    padding: 9px 0;
     border-bottom: 1px solid var(--border);
   }
   .trend-item.last {

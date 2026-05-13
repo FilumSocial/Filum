@@ -59,12 +59,14 @@
 
 <style>
   .pcard {
-    padding: 15px 20px;
+    padding: 16px 20px;
     border-bottom: 1px solid var(--border);
-    transition: background 0.1s;
+    transition: background 0.15s, box-shadow 0.15s;
   }
   .pcard:hover {
-    background: rgba(255, 255, 255, 0.014);
+    background: oklch(1 0 0 / 0.015);
+    box-shadow: var(--shadow-s);
+    position: relative;
   }
   .post-content {
     font-size: 15px;

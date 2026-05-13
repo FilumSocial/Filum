@@ -96,11 +96,11 @@
   }
   .auth-card {
     background: var(--surface);
-    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 32px;
     width: 100%;
     max-width: 380px;
+    box-shadow: var(--shadow-m);
   }
   .logo {
     font-family: 'Cormorant Garamond', serif;
@@ -114,16 +114,19 @@
     padding: 10px 14px;
     margin-bottom: 12px;
     background: var(--surface2);
-    border: 1px solid var(--border);
+    border: 1px solid transparent;
     border-radius: 8px;
     color: var(--text1);
     font-family: 'DM Sans', sans-serif;
     font-size: 14px;
     outline: none;
-    transition: border-color 0.12s;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
   .auth-input:focus {
     border-color: var(--accent);
+    box-shadow:
+      inset 0 1px 2px oklch(0 0 0 / 0.3),
+      0 0 0 3px oklch(0.72 0.18 75 / 0.12);
   }
   .auth-btn {
     width: 100%;
@@ -131,7 +134,7 @@
     border: none;
     border-radius: 8px;
     background: var(--accent);
-    color: #0c0b0a;
+    color: oklch(0.06 0 0);
     font-family: 'DM Sans', sans-serif;
     font-size: 14px;
     font-weight: 600;
@@ -143,16 +146,16 @@
     cursor: default;
   }
   .error-msg {
-    background: rgba(224, 112, 112, 0.12);
-    color: #e07070;
+    background: oklch(0.65 0.16 25 / 0.12);
+    color: oklch(0.65 0.16 25);
     padding: 8px 12px;
     border-radius: 8px;
     font-size: 13px;
     margin-bottom: 12px;
   }
   .success-msg {
-    background: rgba(94, 196, 122, 0.12);
-    color: #5ec47a;
+    background: oklch(0.72 0.14 145 / 0.12);
+    color: oklch(0.72 0.14 145);
     padding: 12px 16px;
     border-radius: 8px;
     font-size: 14px;
