@@ -41,7 +41,7 @@
         <div class="text-[12px] text-[var(--text3)] leading-tight">@{post.author.username} &middot; {ago(post.created_at)}</div>
       </div>
     </button>
-    <p class="text-[17px] leading-relaxed text-[var(--text1)] mb-4 whitespace-pre-wrap">{post.content}</p>
+    <p class="text-[17px] leading-relaxed text-[var(--text1)] my-4 whitespace-pre-wrap">{post.content}</p>
     <div class="-mx-1">
       <VoteRow
         upvotes={post.upvotes}
@@ -64,7 +64,7 @@
     </div>
   {/if}
 
-  <div class="px-5 pb-10">
+  <div class="pb-10">
     {#if comments.length === 0}
       <div class="text-[var(--text3)] text-center py-10 text-[14px]">
         No comments yet. Be the first!

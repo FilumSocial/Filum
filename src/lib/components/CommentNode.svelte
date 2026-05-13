@@ -110,7 +110,7 @@
 
 <style>
   .cmt {
-    padding: 12px 0;
+    padding: 12px 20px;
   }
   .cmt-meta {
     display: flex;
@@ -126,8 +126,8 @@
   }
   .replies-wrap {
     border-left: 2px solid oklch(1 0 0 / 0.06);
-    margin-left: 20px;
-    padding-left: 20px;
+    margin-left: 0;
+    padding-left: 28px;
     margin-top: 6px;
   }
   .user-btn {
