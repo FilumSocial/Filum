@@ -17,7 +17,7 @@ class PostsStore {
       if (followingIds.length > 0) query = query.in('author_id', followingIds);
 
       const { data: postsData, error: postsError } = await query
-        .order(sort === 'top' ? 'score' : 'created_at', { ascending: sort !== 'top' });
+        .order(sort === 'top' ? 'score' : 'created_at', { ascending: false });
 
       if (postsError) throw postsError;
 
@@ -114,6 +114,7 @@ class PostsStore {
       .from('comment_scores')
       .select('*')
       .eq('post_id', postId)
+      .order('score', { ascending: false })
       .order('created_at', { ascending: true });
     if (error) throw error;
 
