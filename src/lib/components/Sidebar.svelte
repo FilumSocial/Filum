@@ -103,7 +103,8 @@
   .nav-btn.active {
     background: var(--accent-soft);
     color: var(--accent);
-    box-shadow: var(--shadow-inset);
+    border: 1px solid var(--accent);
+    /* box-shadow: var(--shadow-inset); */
   }
   .user-card {
     display: flex;

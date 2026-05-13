@@ -88,13 +88,17 @@
 
 <style>
   .sticky-hd {
-    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 48px;
+    padding: 0 20px;
     position: sticky;
     top: 0;
     background: var(--bg-glass);
     backdrop-filter: blur(14px);
     z-index: 20;
-    border-bottom: 1px solid oklch(1 0 0 / 0.04);
+    border-bottom: 1px solid var(--border);
   }
   .back-btn {
     padding: 6px 12px;
@@ -116,7 +120,7 @@
     padding: 18px 20px;
     background: var(--surface);
     border-radius: 12px;
-    box-shadow: var(--shadow-s);
+    border: 1px solid var(--border);
   }
   .slide-in {
     animation: slideIn 0.18s ease forwards;

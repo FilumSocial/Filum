@@ -33,20 +33,18 @@
 
 <div>
   <div class="sticky-hd">
-    <div class="flex justify-between items-center">
-      <span class="font-semibold text-[17px]">Explore</span>
-      <div class="seg">
-        <button
-          class="seg-btn"
-          class:on={sortMode === 'top'}
-          onclick={() => sortMode = 'top'}
-        >Top</button>
-        <button
-          class="seg-btn"
-          class:on={sortMode === 'chron'}
-          onclick={() => sortMode = 'chron'}
-        >New</button>
-      </div>
+    <span class="font-semibold text-[15px]">Explore</span>
+    <div class="seg">
+      <button
+        class="seg-btn"
+        class:on={sortMode === 'top'}
+        onclick={() => sortMode = 'top'}
+      >Top</button>
+      <button
+        class="seg-btn"
+        class:on={sortMode === 'chron'}
+        onclick={() => sortMode = 'chron'}
+      >New</button>
     </div>
   </div>
 
@@ -67,13 +65,17 @@
 
 <style>
   .sticky-hd {
-    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+    padding: 0 20px;
     position: sticky;
     top: 0;
     background: var(--bg-glass);
     backdrop-filter: blur(14px);
     z-index: 20;
-    border-bottom: 1px solid oklch(1 0 0 / 0.04);
+    border-bottom: 1px solid var(--border);
   }
   .seg {
     display: flex;

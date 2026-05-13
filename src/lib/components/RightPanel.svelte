@@ -54,7 +54,8 @@
     border-radius: 12px;
     padding: 16px;
     margin-bottom: 16px;
-    box-shadow: var(--shadow-s);
+    border: 1px solid var(--border);
+    /* box-shadow: var(--shadow-s); */
   }
   .panel-title {
     font-size: 11px;

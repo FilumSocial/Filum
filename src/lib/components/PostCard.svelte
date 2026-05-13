@@ -64,15 +64,14 @@
     padding: 16px 20px;
     background: var(--surface);
     border-radius: 12px;
-    box-shadow: var(--shadow-s);
-    transition: box-shadow 0.15s, transform 0.15s;
+    border: 1px solid var(--border);
+    transition: border-color 0.15s;
   }
   .pcard:first-of-type {
     margin-top: 12px;
   }
   .pcard:hover {
-    box-shadow: var(--shadow-m);
-    transform: translateY(-1px);
+    border-color: var(--text3);
   }
   .post-content {
     font-size: 15px;

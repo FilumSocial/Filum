@@ -30,21 +30,6 @@
 
 <div>
   <div class="sticky-hd">
-    <div class="flex justify-between items-center">
-      <span class="font-semibold text-[17px]">Home</span>
-      <div class="seg">
-        <button
-          class="seg-btn"
-          class:on={sortMode === 'chron'}
-          onclick={() => onSetSortMode('chron')}
-        >New</button>
-        <button
-          class="seg-btn"
-          class:on={sortMode === 'top'}
-          onclick={() => onSetSortMode('top')}
-        >Top</button>
-      </div>
-    </div>
     <div class="tabs">
       <button
         class="tab"
@@ -56,6 +41,18 @@
         class:on={feedMode === 'rec'}
         onclick={() => onSetFeedMode('rec')}
       >Recommended</button>
+    </div>
+    <div class="seg">
+      <button
+        class="seg-btn"
+        class:on={sortMode === 'chron'}
+        onclick={() => onSetSortMode('chron')}
+      >New</button>
+      <button
+        class="seg-btn"
+        class:on={sortMode === 'top'}
+        onclick={() => onSetSortMode('top')}
+      >Top</button>
     </div>
   </div>
 
@@ -109,6 +106,7 @@
     padding: 14px 20px;
     background: var(--bg-raised);
     border-radius: 12px;
+    border: 1px solid var(--border);
   }
   .compose-empty:first-of-type {
     margin-top: 12px;
@@ -123,22 +121,26 @@
   }
 
   .sticky-hd {
-    padding: 14px 20px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+    padding: 0 20px;
     position: sticky;
     top: 0;
     background: var(--bg-glass);
-    backdrop-filter: blur(14px);
+    backdrop-filter: blur(12px);
     z-index: 20;
-    border-bottom: 1px solid oklch(1 0 0 / 0.04);
+    border-bottom: 1px solid var(--border);
   }
   .tabs {
     display: flex;
     gap: 0;
-    margin-top: 10px;
+    height: 100%;
   }
   .tab {
-    flex: 1;
-    padding: 11px 6px;
+    height: 100%;
+    padding: 0 14px;
     border: none;
     border-bottom: 2px solid transparent;
     background: transparent;
@@ -152,7 +154,7 @@
   .tab:hover { color: var(--text1); }
   .tab.on {
     color: var(--text1);
-    border-bottom-color: var(--accent-soft);
+    border-bottom-color: var(--accent);
   }
   .seg {
     display: flex;
@@ -162,7 +164,6 @@
     gap: 2px;
   }
   .seg-btn {
-    flex: 1;
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
