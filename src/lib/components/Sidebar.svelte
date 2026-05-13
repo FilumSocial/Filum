@@ -118,20 +118,16 @@
     text-align: center;
     padding: 9px 10px;
     border-radius: 8px;
-    background: var(--accent);
-    color: oklch(0.06 0 0);
+    background: var(--accent-soft);
+    color: var(--accent);
     font-size: 14px;
     font-weight: 600;
     text-decoration: none;
-    transition: opacity 0.15s, transform 0.15s;
-    box-shadow: var(--shadow-s);
+    transition: background 0.15s;
   }
   .sign-in-btn:hover {
-    opacity: 0.87;
-    transform: scale(1.02);
-  }
-  .sign-in-btn:active {
-    transform: scale(0.96);
+    background: var(--accent-soft);
+    opacity: 0.8;
   }
 
   @media (max-width: 640px) {

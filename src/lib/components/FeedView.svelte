@@ -67,7 +67,7 @@
     <div class="compose-empty">
       <div class="w-full text-center py-4">
         <p class="text-[var(--text2)] text-[14px] mb-2">Sign in to join the conversation</p>
-        <a href="/login" class="inline-block px-5 py-2 rounded-[8px] bg-[var(--accent)] text-[oklch(0.06_0_0)] font-semibold text-[13px] no-underline hover:opacity-87 transition-opacity">Sign in</a>
+        <a href="/login" class="inline-block w-full px-4 py-2.5 rounded-[8px] bg-[var(--accent-soft)] text-[var(--accent)] font-semibold text-[14px] no-underline text-center">Sign in</a>
       </div>
     </div>
   {/if}

@@ -38,7 +38,28 @@ class AuthStore {
     }
   }
 
-  async #loadProfile(userId: string) {
+  async signIn(email: string, password: string) {
+    const { error } = await this.#supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+
+    const { data: { session } } = await this.#supabase.auth.getSession();
+    if (!session?.user) {
+      console.error('SignIn: No session after successful login');
+      return;
+    }
+
+    this.user = { id: session.user.id, email: session.user.email };
+    console.log('SignIn: user set', this.user);
+
+    const profile = await this.#loadProfile(session.user.id);
+    if (!profile) {
+      console.error('SignIn: profile not found for user', session.user.id);
+    }
+
+    await goto('/');
+  }
+
+  async #loadProfile(userId: string): Promise<Profile | null> {
     try {
       const { data, error } = await this.#supabase
         .from('profiles')
@@ -47,25 +68,17 @@ class AuthStore {
         .single();
       if (error) {
         console.error('Profile load error:', error.message);
-        return;
+        return null;
       }
-      if (data) this.profile = data as Profile;
+      if (data) {
+        this.profile = data as Profile;
+        return this.profile;
+      }
+      return null;
     } catch (e) {
       console.error('Profile load exception:', e);
+      return null;
     }
-  }
-
-  async signIn(email: string, password: string) {
-    const { error } = await this.#supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-
-    const { data: { session } } = await this.#supabase.auth.getSession();
-    if (session?.user) {
-      this.user = { id: session.user.id, email: session.user.email };
-      await this.#loadProfile(session.user.id);
-    }
-
-    await goto('/');
   }
 
   async signUp(email: string, password: string, username: string, displayName: string) {
