@@ -64,6 +64,13 @@
       buttonLabel="Post"
       onSubmit={onNewPost}
     />
+  {:else}
+    <div class="compose">
+      <div class="w-full text-center py-4">
+        <p class="text-[var(--text2)] text-[14px] mb-2">Sign in to join the conversation</p>
+        <a href="/login" class="inline-block px-5 py-2 rounded-full bg-[var(--accent)] text-[#0c0b0a] font-semibold text-[13px] no-underline hover:opacity-87 transition-opacity">Sign in</a>
+      </div>
+    </div>
   {/if}
 
   {#if posts.length === 0}

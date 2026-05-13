@@ -41,6 +41,8 @@
         <div class="text-[11px] text-[var(--text3)]">@{userProfile.username}</div>
       </div>
     </div>
+  {:else}
+    <a href="/login" class="sign-in-btn">Sign in</a>
   {/if}
 </nav>
 
@@ -94,6 +96,21 @@
     align-items: center;
     gap: 10px;
     padding: 8px 10px;
+  }
+  .sign-in-btn {
+    display: block;
+    text-align: center;
+    padding: 9px 10px;
+    border-radius: 9px;
+    background: var(--accent);
+    color: #0c0b0a;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.12s;
+  }
+  .sign-in-btn:hover {
+    opacity: 0.87;
   }
 
   @media (max-width: 640px) {
