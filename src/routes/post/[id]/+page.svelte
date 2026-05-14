@@ -101,7 +101,7 @@
   function votePost(dir: 'up' | 'down') {
     if (!post) return;
     postsStore.votePost(post.id, dir);
-    post = postsStore.postMap.get(post.id) || post;
+    post = { ...post };
   }
 
   function applyCommentVote(nodes: CommentWithScore[], id: string, dir: VoteType) {
