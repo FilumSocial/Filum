@@ -14,13 +14,24 @@
   } = $props();
 
   let score = $derived(upvotes - downvotes);
+  let voting = $state(false);
+  let cooldownTimer: ReturnType<typeof setTimeout>;
+
+  function handleVote(dir: 'up' | 'down') {
+    if (voting) return;
+    voting = true;
+    clearTimeout(cooldownTimer);
+    cooldownTimer = setTimeout(() => voting = false, 400);
+    onVote(dir);
+  }
 </script>
 
 <div class="flex items-center gap-0.5">
   <button
     class="vote-btn up"
     class:on={userVote === 'up'}
-    onclick={(e) => { e.stopPropagation(); onVote('up'); }}
+    disabled={voting}
+    onclick={(e) => { e.stopPropagation(); handleVote('up'); }}
   >
     <span class="text-[14px] leading-none">&#9650;</span>
     {#if !compact}
@@ -39,7 +50,8 @@
   <button
     class="vote-btn down"
     class:on={userVote === 'down'}
-    onclick={(e) => { e.stopPropagation(); onVote('down'); }}
+    disabled={voting}
+    onclick={(e) => { e.stopPropagation(); handleVote('down'); }}
   >
     <span class="text-[14px] leading-none">&#9660;</span>
     {#if !compact}
@@ -77,6 +89,11 @@
   }
   .vote-btn:active {
     transform: scale(0.94);
+  }
+  .vote-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+    transform: none;
   }
   .score {
     font-size: 12px;

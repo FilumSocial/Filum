@@ -25,13 +25,22 @@ class PostsStore {
   error = $state<string | null>(null);
   hasMore = $state(true);
   #sortMode: SortMode = 'chron';
+  #feedGen = 0;
+  #voteCooldowns = new Map<string, number>();
+  #VOTE_COOLDOWN_MS = 500;
+
+  #isStale(gen: number): boolean {
+    return gen !== this.#feedGen;
+  }
 
   async fetchFeed(followingIds: string[], sort: SortMode = 'chron', userId?: string, append = false) {
     this.#sortMode = sort;
     if (!append) {
+      this.#feedGen++;
       this.loading = true;
       this.error = null;
     }
+    const gen = this.#feedGen;
     const supabase = createClient();
 
     try {
@@ -46,10 +55,12 @@ class PostsStore {
       if (postsError) throw postsError;
       if (!postsData) { this.hasMore = false; return; }
 
+      if (this.#isStale(gen)) return;
       this.hasMore = postsData.length === FEED_PAGE_SIZE;
 
       const authorIds = [...new Set(postsData.map(p => p.author_id))];
 
+      if (this.#isStale(gen)) return;
       const { data: profiles } = await supabase
         .from('profiles')
         .select('*')
@@ -57,10 +68,12 @@ class PostsStore {
 
       const profileMap = new Map((profiles || []).map(p => [p.id, p]));
 
+      if (this.#isStale(gen)) return;
       const userVotes = userId ? await this.fetchUserPostVotes(userId, postsData.map(p => p.id)) : new Map();
 
       const commentCounts = await this.fetchCommentCounts(postsData.map(p => p.id));
 
+      if (this.#isStale(gen)) return;
       const enriched = postsData.map(p => ({
         ...p,
         author: profileMap.get(p.author_id) || missingProfile(),
@@ -130,6 +143,12 @@ class PostsStore {
     const supabase = createClient();
     const post = this.postMap.get(postId);
     if (!post) return;
+
+    const cooldownKey = `post:${postId}`;
+    const now = Date.now();
+    const lastVote = this.#voteCooldowns.get(cooldownKey);
+    if (lastVote && now - lastVote < this.#VOTE_COOLDOWN_MS) return;
+    this.#voteCooldowns.set(cooldownKey, now);
 
     const prev = { user_vote: post.user_vote, upvotes: post.upvotes, downvotes: post.downvotes, score: post.score };
     this.#applyPostVoteOptimistic(post, voteType);
@@ -239,6 +258,12 @@ class PostsStore {
   }
 
   async voteComment(commentId: string, voteType: VoteType) {
+    const cooldownKey = `comment:${commentId}`;
+    const now = Date.now();
+    const lastVote = this.#voteCooldowns.get(cooldownKey);
+    if (lastVote && now - lastVote < this.#VOTE_COOLDOWN_MS) return;
+    this.#voteCooldowns.set(cooldownKey, now);
+
     const supabase = createClient();
     const { error } = await supabase.rpc('vote_comment', { p_comment_id: commentId, p_vote_type: voteType });
     if (error) throw error;

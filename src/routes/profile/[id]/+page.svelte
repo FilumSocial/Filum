@@ -71,21 +71,32 @@
     if (auth.initialized) loadProfile();
   });
 
+  let togglingFollow = $state(false);
+
   async function toggleFollow() {
-    if (!auth.profile || !profile) return;
+    if (!auth.profile || !profile || togglingFollow) return;
+    togglingFollow = true;
+    const wasFollowing = isFollowing;
+    isFollowing = !isFollowing;
     const supabase = createClient();
-    if (isFollowing) {
-      await supabase
-        .from('follows')
-        .delete()
-        .eq('follower_id', auth.profile.id)
-        .eq('following_id', profile.id);
-      isFollowing = false;
-    } else {
-      await supabase
-        .from('follows')
-        .insert({ follower_id: auth.profile.id, following_id: profile.id });
-      isFollowing = true;
+    try {
+      if (wasFollowing) {
+        const { error } = await supabase
+          .from('follows')
+          .delete()
+          .eq('follower_id', auth.profile.id)
+          .eq('following_id', profile.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('follows')
+          .insert({ follower_id: auth.profile.id, following_id: profile.id });
+        if (error) throw error;
+      }
+    } catch {
+      isFollowing = wasFollowing;
+    } finally {
+      togglingFollow = false;
     }
   }
 
@@ -116,7 +127,7 @@
         {/if}
       </div>
       {#if auth.profile && auth.profile.id !== profile.id}
-        <button class="follow-btn" class:following={isFollowing} onclick={toggleFollow}>
+        <button class="follow-btn" class:following={isFollowing} disabled={togglingFollow} onclick={toggleFollow}>
           {isFollowing ? 'Following' : 'Follow'}
         </button>
       {/if}
@@ -177,5 +188,9 @@
   .follow-btn.following:hover {
     background: oklch(0.66 0.14 155);
     color: oklch(0.065 0.02 175);
+  }
+  .follow-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
   }
 </style>

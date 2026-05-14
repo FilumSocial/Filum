@@ -84,15 +84,15 @@ Still outstanding: no real-time sync for other users' votes. Local scores can st
 
 **Fix:** Changed from fetching all rows to per-post `{ count: 'exact', head: true }` queries. Still N+1 but no longer transfers full row data.
 
-### 8. Feed data race on re-fetch
-**File:** `+page.svelte:26-33`
+### ~~8. Feed data race on re-fetch~~ ✅ FIXED
+**File:** `posts.svelte.ts`
 
-If `feedMode` or `sortMode` changes while a previous `loadFeed()` is in-flight, the second call's result will overwrite the first. Since there's no request cancellation or deduplication, stale data can overwrite fresh data depending on timing. **Not yet fixed.**
+**Fix:** Added `#feedGen` generation counter. Each non-append `fetchFeed` call increments the generation. Stale checks (`#isStale()`) after each DB query prevent out-of-order responses from overwriting newer data.
 
-### 9. No loading state on vote buttons / double-click hazard
+### ~~9. No loading state on vote buttons / double-click hazard~~ ✅ FIXED
 **File:** `VoteRow.svelte`
 
-The `<button>` for voting has no loading/disabled state. A user can click rapidly, sending multiple concurrent RPC calls. **Not yet fixed** — though the DB-level race fix makes concurrent vote calls safe.
+**Fix:** Added local `voting` state with 400ms cooldown timer. Buttons are visually dimmed and non-functional during cooldown. Combined with DB-level atomic upsert and client-side rate limiter, rapid clicking is now safe on all layers.
 
 ---
 
@@ -136,8 +136,13 @@ Content length is checked via CHECK constraints (500 chars for posts, 2000 for c
 ### 1. Entire app breaks if Supabase goes down
 There is no fallback, no offline mode, no local cache. If the Supabase API is unreachable, the app shows error toasts or silently fails.
 
-### 2. No request deduplication
-Multiple rapid clicks on vote/compose buttons trigger multiple RPC calls. The `submitting` guard in `ComposeBox.svelte` helps for posts/comments, but there's no equivalent for voting.
+### ~~2. No request deduplication~~ ✅ FIXED
+Multiple rapid clicks on vote buttons are now throttled via:
+- VoteRow local 400ms cooldown (prevents UI-level double-clicks)
+- Store-level `#voteCooldowns` Map (500ms per target)
+- DB-level atomic upsert (last write wins, no constraint violation)
+
+The `submitting` guard in `ComposeBox.svelte` still covers posts/comments.
 
 ### 3. Single Supabase client singleton
 **File:** `client.ts:7-39`
@@ -226,8 +231,8 @@ Comments are sorted by `score DESC, created_at ASC` (`posts.svelte.ts`):
 | **Sec** | No email verification | Medium |
 | **Sec** | No rate limiting on any operation | High |
 | **Robust** | No offline/fallback | Medium |
-| **Robust** | No request deduplication | Medium |
-| **Robust** | No retry logic | Low |
+| **Robust** | No request deduplication | Medium | ✅ |
+| **Robust** | No retry logic | Low | ❌ |
 | **Scale** | **No pagination** (fetches all posts/comments) | **Critical** |
 | **Scale** | Score views aggregate full votes table on every query | High |
 | **Scale** | Comment count is O(n) JS aggregation | High |
@@ -255,3 +260,7 @@ Comments are sorted by `score DESC, created_at ASC` (`posts.svelte.ts`):
 | 7 | Comment count fetches all rows | `posts.svelte.ts` | ✅ Fixed — `head: true` per-post |
 | 8 | No pagination | `posts.svelte.ts`, `+page.svelte`, `explore/+page.svelte`, `FeedView.svelte` | ✅ Fixed — `range()` + "Show more" button |
 | 9 | handle_new_user search_path in migration | `migration` | ✅ Fixed — `search_path = ''`→`'public'` |
+| 10 | VoteRow double-click spam | `VoteRow.svelte` | ✅ Fixed — 400ms local cooldown + disabled state |
+| 11 | Feed data race on re-fetch | `posts.svelte.ts` | ✅ Fixed — `#feedGen` generation counter with stale checks |
+| 12 | Vote rate limiting | `posts.svelte.ts` | ✅ Fixed — 500ms cooldown per target via `#voteCooldowns` |
+| 13 | Follow/unfollow error handling | `profile/[id]/+page.svelte` | ✅ Fixed — optimistic toggle + revert on failure |
