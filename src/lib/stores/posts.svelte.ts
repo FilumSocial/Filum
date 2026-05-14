@@ -33,7 +33,7 @@ class PostsStore {
     return gen !== this.#feedGen;
   }
 
-  async fetchFeed(followingIds: string[], sort: SortMode = 'chron', userId?: string, append = false) {
+  async fetchFeed(followingIds: string[], sort: SortMode = 'chron', userId?: string, append = false, searchTerm?: string) {
     this.#sortMode = sort;
     if (!append) {
       this.#feedGen++;
@@ -46,6 +46,7 @@ class PostsStore {
     try {
       let query = supabase.from('post_scores').select('*', { count: 'exact', head: false });
       if (followingIds.length > 0) query = query.in('author_id', followingIds);
+      if (searchTerm) query = query.ilike('content', `%${searchTerm}%`);
 
       const offset = append ? this.posts.length : 0;
       const { data: postsData, error: postsError } = await query
@@ -255,6 +256,14 @@ class PostsStore {
       return false;
     }
     return findParent(comments);
+  }
+
+  async editPost(postId: string, content: string) {
+    const supabase = createClient();
+    const { error } = await supabase.from('posts').update({ content }).eq('id', postId);
+    if (error) throw error;
+    const post = this.postMap.get(postId);
+    if (post) post.content = content;
   }
 
   async deletePost(postId: string) {

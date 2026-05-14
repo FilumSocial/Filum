@@ -68,6 +68,10 @@
   async function deletePost(id: string) {
     await postsStore.deletePost(id);
   }
+
+  async function editPost(id: string, content: string) {
+    await postsStore.editPost(id, content);
+  }
 </script>
 
 <svelte:head>
@@ -89,4 +93,5 @@
   onNewPost={newPost}
   onLoadMore={loadMore}
   onDeletePost={deletePost}
+  onEditPost={editPost}
 />

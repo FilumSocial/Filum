@@ -13,6 +13,8 @@
   let userPosts = $state<PostWithScore[]>([]);
   let loading = $state(true);
   let isFollowing = $state(false);
+  let followerCount = $state(0);
+  let followingCount = $state(0);
 
   async function loadProfile() {
     const supabase = createClient();
@@ -25,29 +27,25 @@
     if (profileData) {
       profile = profileData as Profile;
 
-      // Check if following
-      if (auth.profile) {
-        const { data: followData } = await supabase
-          .from('follows')
-          .select('id')
-          .eq('follower_id', auth.profile.id)
-          .eq('following_id', params.id)
-          .single();
-        isFollowing = !!followData;
-      }
+      const [followData, countRes, followerCountRes, followingCountRes] = await Promise.all([
+        auth.profile
+          ? supabase.from('follows').select('id').eq('follower_id', auth.profile.id).eq('following_id', params.id).single()
+          : Promise.resolve({ data: null }),
+        supabase.from('post_scores').select('*').eq('author_id', params.id).order('created_at', { ascending: false }),
+        supabase.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', params.id),
+        supabase.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', params.id),
+      ]) as any;
 
-      // Get post scores
-      const { data: postData } = await supabase
-        .from('post_scores')
-        .select('*')
-        .eq('author_id', params.id)
-        .order('created_at', { ascending: false });
+      isFollowing = !!followData?.data;
+      followerCount = followerCountRes.count || 0;
+      followingCount = followingCountRes.count || 0;
 
+      const postData = countRes?.data;
       if (postData) {
         const { data: countData } = await supabase
           .from('comments')
           .select('post_id')
-          .in('post_id', postData.map((p: any) => p.id)) as { data: { post_id: string }[] | null };
+          .in('post_id', postData.map((p: any) => p.id) as string[]) as { data: { post_id: string }[] | null };
 
         const commentCounts = new Map<string, number>();
         if (countData) {
@@ -112,6 +110,12 @@
     await postsStore.deletePost(id);
     userPosts = userPosts.filter(p => p.id !== id);
   }
+
+  async function editPost(id: string, content: string) {
+    await postsStore.editPost(id, content);
+    const p = userPosts.find(p => p.id === id);
+    if (p) p.content = content;
+  }
 </script>
 
 <svelte:head>
@@ -138,6 +142,12 @@
       {/if}
     </div>
 
+    <div class="stats-row">
+      <span class="stat"><strong>{userPosts.length}</strong> posts</span>
+      <span class="stat"><strong>{followerCount}</strong> followers</span>
+      <span class="stat"><strong>{followingCount}</strong> following</span>
+    </div>
+
     <div class="px-5 pt-6 pb-2">
       <span class="text-sm font-semibold text-[var(--text1)]">Posts</span>
     </div>
@@ -152,6 +162,7 @@
           {post}
           currentUserId={auth.user?.id}
           onDelete={() => deletePost(post.id)}
+          onEdit={(_, c) => editPost(post.id, c)}
           onClick={() => openThread(post.id)}
           onVote={(dir) => votePost(post.id, dir)}
         />
@@ -195,6 +206,18 @@
   .follow-btn.following:hover {
     background: oklch(0.66 0.14 155);
     color: oklch(0.065 0.02 175);
+  }
+  .stats-row {
+    display: flex;
+    gap: 20px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text2);
+  }
+  .stat strong {
+    color: var(--text1);
+    font-weight: 600;
   }
   .follow-btn:disabled {
     opacity: 0.5;

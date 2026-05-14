@@ -15,6 +15,7 @@
   let currentPage = $derived(
     $page.url.pathname === '/' ? 'home' :
     $page.url.pathname.startsWith('/explore') ? 'explore' :
+    $page.url.pathname.startsWith('/notifications') ? 'notif' :
     $page.url.pathname.startsWith('/profile') ? 'profile' :
     ''
   );
@@ -55,6 +56,7 @@
   function handleNavigate(page: string) {
     if (page === 'home') goto('/');
     else if (page === 'explore') goto('/explore');
+    else if (page === 'notif') goto('/notifications');
     else if (page === 'profile' && auth.profile) goto(`/profile/${auth.profile.id}`);
   }
 </script>

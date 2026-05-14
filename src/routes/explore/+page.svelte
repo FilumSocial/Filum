@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
   import PostCard from '$lib/components/PostCard.svelte';
   import { auth } from '$lib/stores/auth.svelte';
   import { postsStore } from '$lib/stores/posts.svelte';
@@ -9,16 +10,17 @@
   let loadingMore = $state(false);
   let sentinelEl = $state<HTMLDivElement | null>(null);
   let sentinelObserver: IntersectionObserver | null = null;
+  let currentTag = $derived($page.url.searchParams.get('tag') || '');
 
   $effect(() => {
     if (auth.initialized) {
-      postsStore.fetchFeed([], sortMode, auth.user?.id);
+      postsStore.fetchFeed([], sortMode, auth.user?.id, false, currentTag || undefined);
     }
   });
 
   $effect(() => {
-    sortMode;
-    if (auth.initialized) postsStore.fetchFeed([], sortMode, auth.user?.id);
+    sortMode; currentTag;
+    if (auth.initialized) postsStore.fetchFeed([], sortMode, auth.user?.id, false, currentTag || undefined);
   });
 
   $effect(() => {
@@ -40,7 +42,7 @@
   async function loadMore() {
     if (loadingMore || !postsStore.hasMore) return;
     loadingMore = true;
-    await postsStore.fetchFeed([], sortMode, auth.user?.id, true);
+    await postsStore.fetchFeed([], sortMode, auth.user?.id, true, currentTag || undefined);
     loadingMore = false;
   }
 
@@ -55,6 +57,10 @@
   async function deletePost(id: string) {
     await postsStore.deletePost(id);
   }
+
+  async function editPost(id: string, content: string) {
+    await postsStore.editPost(id, content);
+  }
 </script>
 
 <svelte:head>
@@ -63,7 +69,7 @@
 
 <div>
   <div class="sticky-hd">
-    <span class="font-semibold text-[15px]">Explore</span>
+    <span class="font-semibold text-[15px]">{currentTag ? `#${currentTag}` : 'Explore'}</span>
     <div class="btn-group">
       <button
         class="hd-btn"
@@ -88,6 +94,7 @@
         {post}
         currentUserId={auth.user?.id}
         onDelete={() => deletePost(post.id)}
+        onEdit={(_, c) => editPost(post.id, c)}
         onClick={() => openThread(post.id)}
         onVote={(dir) => votePost(post.id, dir)}
       />
