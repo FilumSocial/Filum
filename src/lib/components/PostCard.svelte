@@ -9,13 +9,19 @@
     post,
     onClick,
     onVote,
+    onDelete,
+    currentUserId,
     following = false,
   }: {
     post: PostWithScore;
     onClick: () => void;
     onVote: (dir: 'up' | 'down') => void;
+    onDelete?: () => void;
+    currentUserId?: string | null;
     following?: boolean;
   } = $props();
+
+  let isOwn = $derived(!!currentUserId && currentUserId === post.author_id);
 </script>
 
 <div
@@ -55,6 +61,11 @@
     <button class="act-btn" aria-label="Share" onclick={(e) => { e.stopPropagation(); }}>
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="4" cy="7.5" r="2"/><circle cx="11" cy="4.5" r="2"/><circle cx="11" cy="10.5" r="2"/><path d="M6 8.5l3 2M9 4.5l-3 2"/></svg>
     </button>
+    {#if isOwn && onDelete}
+      <button class="act-btn delete" aria-label="Delete" onclick={(e) => { e.stopPropagation(); onDelete(); }}>
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4h9M5.5 4V2.5a1 1 0 011-1h2a1 1 0 011 1V4M6 6.5v4M9 6.5v4M2.5 4l1 9a1 1 0 001 1h7a1 1 0 001-1l1-9"/></svg>
+      </button>
+    {/if}
   </div>
 </div>
 
@@ -104,6 +115,9 @@
   .act-btn:hover {
     background: var(--surface2);
     color: var(--text1);
+  }
+  .act-btn.delete:hover {
+    color: oklch(0.65 0.16 25);
   }
   .fade-up {
     animation: fadeUp 0.18s ease forwards;

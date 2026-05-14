@@ -3,8 +3,8 @@
   import FeedView from '$lib/components/FeedView.svelte';
   import { auth } from '$lib/stores/auth.svelte';
   import { postsStore } from '$lib/stores/posts.svelte';
-import { createClient } from '$lib/supabase/client';
-import type { SortMode, FeedMode } from '$lib/types';
+  import { createClient } from '$lib/supabase/client';
+  import type { SortMode, FeedMode } from '$lib/types';
 
   let feedMode = $state<FeedMode>('following');
   let sortMode = $state<SortMode>('chron');
@@ -64,6 +64,10 @@ import type { SortMode, FeedMode } from '$lib/types';
     if (!auth.profile) return;
     await postsStore.createPost(content, auth.profile);
   }
+
+  async function deletePost(id: string) {
+    await postsStore.deletePost(id);
+  }
 </script>
 
 <svelte:head>
@@ -84,4 +88,5 @@ import type { SortMode, FeedMode } from '$lib/types';
   onVotePost={votePost}
   onNewPost={newPost}
   onLoadMore={loadMore}
+  onDeletePost={deletePost}
 />

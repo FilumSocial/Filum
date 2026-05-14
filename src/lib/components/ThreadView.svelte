@@ -16,6 +16,8 @@
     onVoteComment,
     onAddComment,
     onAddReply,
+    onDeleteComment,
+    currentUserId,
   }: {
     post: PostWithScore;
     comments: CommentWithScore[];
@@ -25,6 +27,8 @@
     onVoteComment: (id: string, dir: 'up' | 'down') => void;
     onAddComment: (content: string) => Promise<void> | void;
     onAddReply: (parentId: string, content: string) => Promise<void> | void;
+    onDeleteComment?: (id: string) => void;
+    currentUserId?: string | null;
   } = $props();
 </script>
 
@@ -80,6 +84,8 @@
           {userProfile}
           onVote={onVoteComment}
           onReply={onAddReply}
+          onDelete={onDeleteComment}
+          {currentUserId}
         />
       {/each}
     {/if}

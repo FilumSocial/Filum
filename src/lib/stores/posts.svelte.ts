@@ -257,6 +257,31 @@ class PostsStore {
     return findParent(comments);
   }
 
+  async deletePost(postId: string) {
+    const supabase = createClient();
+    const { error } = await supabase.from('posts').delete().eq('id', postId);
+    if (error) throw error;
+    this.postMap.delete(postId);
+    this.posts = this.posts.filter(p => p.id !== postId);
+  }
+
+  async deleteComment(commentId: string) {
+    const supabase = createClient();
+    const { error } = await supabase.from('comments').delete().eq('id', commentId);
+    if (error) throw error;
+  }
+
+  removeCommentFromTree(comments: CommentWithScore[], targetId: string): boolean {
+    for (let i = 0; i < comments.length; i++) {
+      if (comments[i].id === targetId) {
+        comments.splice(i, 1);
+        return true;
+      }
+      if (comments[i].replies.length && this.removeCommentFromTree(comments[i].replies, targetId)) return true;
+    }
+    return false;
+  }
+
   async voteComment(commentId: string, voteType: VoteType) {
     const cooldownKey = `comment:${commentId}`;
     const now = Date.now();

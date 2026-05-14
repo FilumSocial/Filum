@@ -51,6 +51,10 @@
   function votePost(id: string, dir: 'up' | 'down') {
     postsStore.votePost(id, dir);
   }
+
+  async function deletePost(id: string) {
+    await postsStore.deletePost(id);
+  }
 </script>
 
 <svelte:head>
@@ -82,6 +86,8 @@
     {#each postsStore.posts as post (post.id)}
       <PostCard
         {post}
+        currentUserId={auth.user?.id}
+        onDelete={() => deletePost(post.id)}
         onClick={() => openThread(post.id)}
         onVote={(dir) => votePost(post.id, dir)}
       />

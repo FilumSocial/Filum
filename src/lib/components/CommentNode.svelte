@@ -12,13 +12,19 @@
     userProfile,
     onVote,
     onReply,
+    onDelete,
+    currentUserId,
   }: {
     comment: CommentWithScore;
     depth?: number;
     userProfile: Profile | null;
     onVote: (id: string, dir: 'up' | 'down') => void;
     onReply: (parentId: string, content: string) => Promise<void> | void;
+    onDelete?: (id: string) => void;
+    currentUserId?: string | null;
   } = $props();
+
+  let isOwn = $derived(!!currentUserId && currentUserId === comment.author_id);
 
   let collapsed = $state(false);
   let replying = $state(false);
@@ -73,6 +79,11 @@
           &#8617; Reply
         </button>
       {/if}
+      {#if isOwn && onDelete}
+        <button class="act-btn del text-[12px]" onclick={() => onDelete(comment.id)}>
+          &#128465;
+        </button>
+      {/if}
     </div>
 
     {#if replying}
@@ -102,6 +113,8 @@
             {userProfile}
             onVote={onVote}
             {onReply}
+            {onDelete}
+            {currentUserId}
           />
         {/each}
       </div>
@@ -189,6 +202,9 @@
   .act-btn:hover {
     background: var(--surface2);
     color: var(--text1);
+  }
+  .act-btn.del:hover {
+    color: oklch(0.65 0.16 25);
   }
   .sm-post-btn {
     padding: 5px 13px;

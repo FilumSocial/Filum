@@ -11,6 +11,7 @@
   let post = $state<PostWithScore | null>(null);
   let comments = $state<CommentWithScore[]>([]);
   let loading = $state(true);
+  let voteChannel: ReturnType<ReturnType<typeof createClient>['channel']> | null = null;
 
   async function loadThread() {
     if (!auth.initialized) return;
@@ -59,6 +60,38 @@
 
   $effect(() => {
     if (auth.initialized) loadThread();
+  });
+
+  $effect(() => {
+    if (!post || !auth.initialized) return;
+    if (voteChannel) return;
+    const supabase = createClient();
+    voteChannel = supabase.channel(`votes:${post.id}`)
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'votes', filter: `post_id=eq.${post.id}` },
+        (payload: any) => {
+          if (!post) return;
+          const uid = payload.new?.user_id || payload.old?.user_id;
+          if (uid === auth.user?.id) return;
+          if (payload.eventType === 'INSERT') {
+            if (payload.new.vote_type === 'up') post.upvotes++;
+            else post.downvotes++;
+          } else if (payload.eventType === 'DELETE') {
+            if (payload.old.vote_type === 'up') post.upvotes = Math.max(0, post.upvotes - 1);
+            else post.downvotes = Math.max(0, post.downvotes - 1);
+          } else if (payload.eventType === 'UPDATE') {
+            if (payload.old.vote_type === 'up') post.upvotes = Math.max(0, post.upvotes - 1);
+            else post.downvotes = Math.max(0, post.downvotes - 1);
+            if (payload.new.vote_type === 'up') post.upvotes++;
+            else post.downvotes++;
+          }
+          post.score = post.upvotes - post.downvotes;
+        })
+      .subscribe();
+    return () => {
+      if (voteChannel) supabase.removeChannel(voteChannel);
+      voteChannel = null;
+    };
   });
 
   function goBack() { goto('/'); }
@@ -115,6 +148,13 @@
     if (!inserted) comments = [...comments, newComment];
     comments = comments;
   }
+
+  async function deleteComment(id: string) {
+    await postsStore.deleteComment(id);
+    postsStore.removeCommentFromTree(comments, id);
+    comments = comments;
+    if (post) post.comment_count = Math.max(0, post.comment_count - 1);
+  }
 </script>
 
 <svelte:head>
@@ -128,11 +168,13 @@
     {post}
     {comments}
     userProfile={auth.profile}
+    currentUserId={auth.user?.id}
     onBack={goBack}
     onVotePost={votePost}
     onVoteComment={voteComment}
     onAddComment={addComment}
     onAddReply={addReply}
+    onDeleteComment={deleteComment}
   />
 {:else}
   <div class="flex items-center justify-center py-20 text-[var(--text3)]">Post not found</div>

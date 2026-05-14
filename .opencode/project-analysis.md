@@ -267,3 +267,6 @@ Comments are sorted by `score DESC, created_at ASC` (`posts.svelte.ts`):
 | 14 | Infinite scroll | `FeedView.svelte`, `explore/+page.svelte` | ✅ Fixed — IntersectionObserver sentinel replaces "Show more" button |
 | 15 | User suggestions | `+layout.svelte`, `RightPanel.svelte` | ✅ Fixed — fetches 3 random profiles not followed, with follow button |
 | 16 | Character count | `ComposeBox.svelte` | ✅ Added — remaining chars display, near/over limit colors, maxlength enforcement |
+| 17 | Post delete UI | `PostCard.svelte`, `FeedView.svelte`, `+page.svelte`, `explore/+page.svelte`, `profile/[id]/+page.svelte` | ✅ Added — delete button on own posts with confirmation |
+| 18 | Comment delete UI | `CommentNode.svelte`, `ThreadView.svelte`, `post/[id]/+page.svelte` | ✅ Added — delete button on own comments |
+| 19 | Real-time vote sync | `post/[id]/+page.svelte` | ✅ Added — Supabase Realtime channel for live post score updates from other users |

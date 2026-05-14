@@ -17,6 +17,7 @@
     onVotePost,
     onNewPost,
     onLoadMore,
+    onDeletePost,
   }: {
     posts: PostWithScore[];
     userProfile: Profile | null;
@@ -31,6 +32,7 @@
     onVotePost: (id: string, dir: 'up' | 'down') => void;
     onNewPost: (content: string) => Promise<void> | void;
     onLoadMore?: () => void;
+    onDeletePost?: (id: string) => void;
   } = $props();
 
   let sentinelEl = $state<HTMLDivElement | null>(null);
@@ -109,6 +111,8 @@
     {#each posts as post (post.id)}
       <PostCard
         {post}
+        onDelete={onDeletePost ? () => onDeletePost(post.id) : undefined}
+        currentUserId={userProfile?.id}
         onClick={() => onOpenThread(post.id)}
         onVote={(dir) => onVotePost(post.id, dir)}
       />
