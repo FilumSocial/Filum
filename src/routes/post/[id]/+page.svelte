@@ -54,6 +54,7 @@
       user_vote: userVote,
       comment_count: commentCountRes.count || 0,
     } as PostWithScore;
+    postsStore.postMap.set(post.id, post);
 
     comments = await postsStore.fetchComments(postId, auth.user?.id);
     loading = false;
@@ -126,8 +127,16 @@
     }
   }
 
+  function sortCommentTree(nodes: CommentWithScore[]) {
+    nodes.sort((a, b) => b.score - a.score || a.created_at.localeCompare(b.created_at));
+    for (const n of nodes) {
+      if (n.replies.length) sortCommentTree(n.replies);
+    }
+  }
+
   async function voteComment(id: string, dir: 'up' | 'down') {
     applyCommentVote(comments, id, dir);
+    sortCommentTree(comments);
     comments = comments;
     try {
       await postsStore.voteComment(id, dir);
