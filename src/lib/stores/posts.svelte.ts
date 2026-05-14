@@ -84,10 +84,10 @@ class PostsStore {
 
       if (append) {
         this.posts = [...this.posts, ...enriched];
-        for (const p of enriched) this.postMap.set(p.id, p);
+        this.postMap = new Map(this.posts.map(p => [p.id, p]));
       } else {
         this.posts = enriched;
-        this.postMap = new Map(enriched.map(p => [p.id, p]));
+        this.postMap = new Map(this.posts.map(p => [p.id, p]));
       }
     } catch (e) {
       if (!append) this.error = e instanceof Error ? e.message : 'Failed to fetch posts';
@@ -136,7 +136,7 @@ class PostsStore {
 
     const newPost: PostWithScore = { ...data, upvotes: 0, downvotes: 0, score: 0, author: authorProfile, user_vote: null, comment_count: 0 };
     this.posts = [newPost, ...this.posts];
-    this.postMap.set(newPost.id, newPost);
+    this.postMap.set(newPost.id, this.posts[0]);
     return newPost;
   }
 
