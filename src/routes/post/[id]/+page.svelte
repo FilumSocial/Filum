@@ -54,7 +54,6 @@
       user_vote: userVote,
       comment_count: commentCountRes.count || 0,
     } as PostWithScore;
-    postsStore.postMap.set(post.id, post);
 
     comments = await postsStore.fetchComments(postId, auth.user?.id);
     loading = false;
@@ -98,10 +97,24 @@
 
   function goBack() { goto('/'); }
 
-  function votePost(dir: 'up' | 'down') {
+  async function votePost(dir: 'up' | 'down') {
     if (!post) return;
-    postsStore.votePost(post.id, dir);
-    post = { ...post };
+    const prev = post.user_vote;
+    if (prev === dir) {
+      post.score += prev === 'up' ? -1 : 1;
+      post.upvotes += prev === 'up' ? -1 : 0;
+      post.downvotes += prev === 'down' ? -1 : 0;
+      post.user_vote = null;
+    } else {
+      if (prev === 'up') { post.upvotes--; post.score--; }
+      if (prev === 'down') { post.downvotes--; post.score++; }
+      post.score += dir === 'up' ? 1 : -1;
+      post.upvotes += dir === 'up' ? 1 : 0;
+      post.downvotes += dir === 'down' ? 1 : 0;
+      post.user_vote = dir;
+    }
+    const { error } = await createClient().rpc('vote_post', { p_post_id: post.id, p_vote_type: dir });
+    if (error) loadThread();
   }
 
   function applyCommentVote(nodes: CommentWithScore[], id: string, dir: VoteType) {
