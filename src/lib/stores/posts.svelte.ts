@@ -153,14 +153,12 @@ class PostsStore {
 
     const prev = { user_vote: post.user_vote, upvotes: post.upvotes, downvotes: post.downvotes, score: post.score };
     this.#applyPostVoteOptimistic(post, voteType);
-
-    const idx = this.posts.findIndex(p => p.id === postId);
-    if (idx !== -1) this.posts[idx] = { ...this.posts[idx] };
+    this.posts = this.posts.map(p => p.id === postId ? { ...p } : p);
 
     const { error } = await supabase.rpc('vote_post', { p_post_id: postId, p_vote_type: voteType });
     if (error) {
       Object.assign(post, prev);
-      if (idx !== -1) this.posts[idx] = { ...this.posts[idx] };
+      this.posts = this.posts.map(p => p.id === postId ? { ...p } : p);
       throw error;
     }
 
