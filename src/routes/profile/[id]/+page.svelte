@@ -47,7 +47,7 @@
         const { data: countData } = await supabase
           .from('comments')
           .select('post_id')
-          .in('post_id', postData.map(p => p.id));
+          .in('post_id', postData.map((p: any) => p.id)) as { data: { post_id: string }[] | null };
 
         const commentCounts = new Map<string, number>();
         if (countData) {
@@ -56,7 +56,7 @@
           }
         }
 
-        userPosts = postData.map(p => ({
+        userPosts = postData.map((p: any) => ({
           ...p,
           author: profileData as Profile,
           user_vote: null,

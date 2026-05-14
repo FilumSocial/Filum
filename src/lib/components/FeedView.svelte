@@ -7,24 +7,30 @@
     posts,
     userProfile,
     error = null,
+    hasMore = true,
     feedMode,
     sortMode,
+    loadingMore = false,
     onSetFeedMode,
     onSetSortMode,
     onOpenThread,
     onVotePost,
     onNewPost,
+    onLoadMore,
   }: {
     posts: PostWithScore[];
     userProfile: Profile | null;
     error?: string | null;
+    hasMore?: boolean;
     feedMode: FeedMode;
     sortMode: SortMode;
+    loadingMore?: boolean;
     onSetFeedMode: (mode: FeedMode) => void;
     onSetSortMode: (mode: SortMode) => void;
     onOpenThread: (id: string) => void;
     onVotePost: (id: string, dir: 'up' | 'down') => void;
     onNewPost: (content: string) => Promise<void> | void;
+    onLoadMore?: () => void;
   } = $props();
 </script>
 
@@ -88,6 +94,13 @@
         onVote={(dir) => onVotePost(post.id, dir)}
       />
     {/each}
+    {#if hasMore && onLoadMore}
+      <div class="flex justify-center pb-8">
+        <button class="load-more-btn" onclick={onLoadMore} disabled={loadingMore}>
+          {loadingMore ? 'Loading...' : 'Show more'}
+        </button>
+      </div>
+    {/if}
   {/if}
 </div>
 
@@ -153,6 +166,26 @@
   .hd-btn:hover {
     border-color: var(--text3);
     color: var(--text1);
+  }
+  .load-more-btn {
+    padding: 8px 24px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .load-more-btn:hover {
+    border-color: var(--text3);
+    color: var(--text1);
+  }
+  .load-more-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
   }
   .hd-btn.on {
     background: var(--accent-soft);

@@ -3,9 +3,10 @@
   import PostCard from '$lib/components/PostCard.svelte';
   import { auth } from '$lib/stores/auth.svelte';
   import { postsStore } from '$lib/stores/posts.svelte';
-  import type { PostWithScore, SortMode } from '$lib/types';
+  import type { SortMode } from '$lib/types';
 
   let sortMode = $state<SortMode>('top');
+  let loadingMore = $state(false);
 
   $effect(() => {
     if (auth.initialized) {
@@ -17,6 +18,13 @@
     sortMode;
     if (auth.initialized) postsStore.fetchFeed([], sortMode, auth.user?.id);
   });
+
+  async function loadMore() {
+    if (loadingMore || !postsStore.hasMore) return;
+    loadingMore = true;
+    await postsStore.fetchFeed([], sortMode, auth.user?.id, true);
+    loadingMore = false;
+  }
 
   function openThread(id: string) {
     goto(`/post/${id}`);
@@ -60,6 +68,13 @@
         onVote={(dir) => votePost(post.id, dir)}
       />
     {/each}
+    {#if postsStore.hasMore}
+      <div class="flex justify-center pb-8">
+        <button class="load-more-btn" onclick={loadMore} disabled={loadingMore}>
+          {loadingMore ? 'Loading...' : 'Show more'}
+        </button>
+      </div>
+    {/if}
   {/if}
 </div>
 
@@ -102,5 +117,25 @@
     background: var(--accent);
     color: oklch(0.06 0 0);
     border-color: var(--accent);
+  }
+  .load-more-btn {
+    padding: 8px 24px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .load-more-btn:hover {
+    border-color: var(--text3);
+    color: var(--text1);
+  }
+  .load-more-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
   }
 </style>

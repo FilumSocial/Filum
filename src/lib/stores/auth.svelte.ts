@@ -23,7 +23,7 @@ class AuthStore {
       this.initialized = true;
     }
 
-    this.#supabase.auth.onAuthStateChange((_event, session) => {
+    this.#supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
       this.#handleSession(session);
     });
   }

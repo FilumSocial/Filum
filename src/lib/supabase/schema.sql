@@ -192,53 +192,43 @@ ALTER PUBLICATION supabase_realtime ADD TABLE posts;
 ALTER PUBLICATION supabase_realtime ADD TABLE comments;
 ALTER PUBLICATION supabase_realtime ADD TABLE votes;
 
--- 8. Function: vote on a post (upsert or delete)
+-- 8. Function: vote on a post (atomic upsert, no race condition)
 CREATE OR REPLACE FUNCTION vote_post(p_post_id UUID, p_vote_type TEXT)
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = 'public'
 AS $$
-DECLARE
-  existing TEXT;
 BEGIN
-  SELECT vote_type INTO existing FROM votes
-  WHERE user_id = auth.uid() AND post_id = p_post_id;
-
-  IF existing IS NULL THEN
-    INSERT INTO votes (user_id, post_id, vote_type)
-    VALUES (auth.uid(), p_post_id, p_vote_type);
-  ELSIF existing = p_vote_type THEN
-    DELETE FROM votes WHERE user_id = auth.uid() AND post_id = p_post_id;
-  ELSE
-    UPDATE votes SET vote_type = p_vote_type
-    WHERE user_id = auth.uid() AND post_id = p_post_id;
-  END IF;
+  WITH toggled_off AS (
+    DELETE FROM votes
+    WHERE user_id = auth.uid() AND post_id = p_post_id AND vote_type = p_vote_type
+    RETURNING 1
+  )
+  INSERT INTO votes (user_id, post_id, vote_type)
+  SELECT auth.uid(), p_post_id, p_vote_type
+  WHERE NOT EXISTS (SELECT 1 FROM toggled_off)
+  ON CONFLICT (user_id, post_id) DO UPDATE SET vote_type = EXCLUDED.vote_type;
 END;
 $$;
 
--- Function: vote on a comment
+-- Function: vote on a comment (atomic upsert, no race condition)
 CREATE OR REPLACE FUNCTION vote_comment(p_comment_id UUID, p_vote_type TEXT)
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = 'public'
 AS $$
-DECLARE
-  existing TEXT;
 BEGIN
-  SELECT vote_type INTO existing FROM votes
-  WHERE user_id = auth.uid() AND comment_id = p_comment_id;
-
-  IF existing IS NULL THEN
-    INSERT INTO votes (user_id, comment_id, vote_type)
-    VALUES (auth.uid(), p_comment_id, p_vote_type);
-  ELSIF existing = p_vote_type THEN
-    DELETE FROM votes WHERE user_id = auth.uid() AND comment_id = p_comment_id;
-  ELSE
-    UPDATE votes SET vote_type = p_vote_type
-    WHERE user_id = auth.uid() AND comment_id = p_comment_id;
-  END IF;
+  WITH toggled_off AS (
+    DELETE FROM votes
+    WHERE user_id = auth.uid() AND comment_id = p_comment_id AND vote_type = p_vote_type
+    RETURNING 1
+  )
+  INSERT INTO votes (user_id, comment_id, vote_type)
+  SELECT auth.uid(), p_comment_id, p_vote_type
+  WHERE NOT EXISTS (SELECT 1 FROM toggled_off)
+  ON CONFLICT (user_id, comment_id) DO UPDATE SET vote_type = EXCLUDED.vote_type;
 END;
 $$;
 

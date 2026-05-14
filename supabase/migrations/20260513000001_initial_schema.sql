@@ -109,42 +109,40 @@ ALTER PUBLICATION supabase_realtime ADD TABLE posts;
 ALTER PUBLICATION supabase_realtime ADD TABLE comments;
 ALTER PUBLICATION supabase_realtime ADD TABLE votes;
 
--- 8. Voting RPC functions
+-- 8. Voting RPC functions (atomic upsert, no race condition)
 CREATE OR REPLACE FUNCTION vote_post(p_post_id UUID, p_vote_type TEXT)
 RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path = 'public' AS $$
-DECLARE existing TEXT;
 BEGIN
-  SELECT vote_type INTO existing FROM votes WHERE user_id = auth.uid() AND post_id = p_post_id;
-  IF existing IS NULL THEN
-    INSERT INTO votes (user_id, post_id, vote_type) VALUES (auth.uid(), p_post_id, p_vote_type);
-  ELSIF existing = p_vote_type THEN
-    DELETE FROM votes WHERE user_id = auth.uid() AND post_id = p_post_id;
-  ELSE
-    UPDATE votes SET vote_type = p_vote_type WHERE user_id = auth.uid() AND post_id = p_post_id;
-  END IF;
+  WITH toggled_off AS (
+    DELETE FROM votes WHERE user_id = auth.uid() AND post_id = p_post_id AND vote_type = p_vote_type
+    RETURNING 1
+  )
+  INSERT INTO votes (user_id, post_id, vote_type)
+  SELECT auth.uid(), p_post_id, p_vote_type
+  WHERE NOT EXISTS (SELECT 1 FROM toggled_off)
+  ON CONFLICT (user_id, post_id) DO UPDATE SET vote_type = EXCLUDED.vote_type;
 END;
 $$;
 
 CREATE OR REPLACE FUNCTION vote_comment(p_comment_id UUID, p_vote_type TEXT)
 RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path = 'public' AS $$
-DECLARE existing TEXT;
 BEGIN
-  SELECT vote_type INTO existing FROM votes WHERE user_id = auth.uid() AND comment_id = p_comment_id;
-  IF existing IS NULL THEN
-    INSERT INTO votes (user_id, comment_id, vote_type) VALUES (auth.uid(), p_comment_id, p_vote_type);
-  ELSIF existing = p_vote_type THEN
-    DELETE FROM votes WHERE user_id = auth.uid() AND comment_id = p_comment_id;
-  ELSE
-    UPDATE votes SET vote_type = p_vote_type WHERE user_id = auth.uid() AND comment_id = p_comment_id;
-  END IF;
+  WITH toggled_off AS (
+    DELETE FROM votes WHERE user_id = auth.uid() AND comment_id = p_comment_id AND vote_type = p_vote_type
+    RETURNING 1
+  )
+  INSERT INTO votes (user_id, comment_id, vote_type)
+  SELECT auth.uid(), p_comment_id, p_vote_type
+  WHERE NOT EXISTS (SELECT 1 FROM toggled_off)
+  ON CONFLICT (user_id, comment_id) DO UPDATE SET vote_type = EXCLUDED.vote_type;
 END;
 $$;
 
 -- 9. Auto-create profile on user signup
 CREATE OR REPLACE FUNCTION handle_new_user()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = 'public' AS $$
 BEGIN
-  INSERT INTO public.profiles (id, username, display_name, avatar_color)
+  INSERT INTO profiles (id, username, display_name, avatar_color)
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data ->> 'username', 'user_' || substr(NEW.id::text, 1, 8)),

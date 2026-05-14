@@ -4,7 +4,7 @@
   import { auth } from '$lib/stores/auth.svelte';
   import { postsStore } from '$lib/stores/posts.svelte';
   import { createClient } from '$lib/supabase/client';
-  import type { PostWithScore, CommentWithScore, Profile } from '$lib/types';
+  import type { PostWithScore, CommentWithScore, Profile, VoteType } from '$lib/types';
 
   let { params } = $props();
 
@@ -25,8 +25,8 @@
     if (!postData) { loading = false; return; }
 
     const [authorRes, votesRes, commentCountRes] = await Promise.all([
-      supabase.from('profiles').select('*').eq('id', postData.author_id).single(),
-      supabase.from('votes').select('vote_type').eq('post_id', postId),
+      supabase.from('profiles').select('*').eq('id', postData.author_id).single() as Promise<{ data: Profile; error: any }>,
+      supabase.from('votes').select('vote_type').eq('post_id', postId) as Promise<{ data: { vote_type: string }[] | null; error: any }>,
       supabase.from('comments').select('id', { count: 'exact', head: true }).eq('post_id', postId),
     ]);
 
@@ -69,9 +69,37 @@
     post = postsStore.postMap.get(post.id) || post;
   }
 
+  function applyCommentVote(nodes: CommentWithScore[], id: string, dir: VoteType) {
+    for (const n of nodes) {
+      if (n.id === id) {
+        const prev = n.user_vote;
+        if (prev === dir) {
+          n.score += prev === 'up' ? -1 : 1;
+          n.upvotes += prev === 'up' ? -1 : 0;
+          n.downvotes += prev === 'down' ? -1 : 0;
+          n.user_vote = null;
+        } else {
+          if (prev === 'up') { n.upvotes--; n.score--; }
+          if (prev === 'down') { n.downvotes--; n.score++; }
+          n.score += dir === 'up' ? 1 : -1;
+          n.upvotes += dir === 'up' ? 1 : 0;
+          n.downvotes += dir === 'down' ? 1 : 0;
+          n.user_vote = dir;
+        }
+        return;
+      }
+      if (n.replies.length) applyCommentVote(n.replies, id, dir);
+    }
+  }
+
   async function voteComment(id: string, dir: 'up' | 'down') {
-    await postsStore.voteComment(id, dir);
-    comments = await postsStore.fetchComments(params.id, auth.user?.id);
+    applyCommentVote(comments, id, dir);
+    comments = comments;
+    try {
+      await postsStore.voteComment(id, dir);
+    } catch {
+      comments = await postsStore.fetchComments(params.id, auth.user?.id);
+    }
   }
 
   async function addComment(content: string): Promise<void> {
@@ -85,7 +113,7 @@
     const newComment = await postsStore.addComment(post.id, content, auth.profile, parentId);
     const inserted = postsStore.insertReplyIntoTree(comments, newComment, parentId);
     if (!inserted) comments = [...comments, newComment];
-    comments = comments; // trigger reactivity
+    comments = comments;
   }
 </script>
 
