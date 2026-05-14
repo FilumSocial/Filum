@@ -270,3 +270,7 @@ Comments are sorted by `score DESC, created_at ASC` (`posts.svelte.ts`):
 | 17 | Post delete UI | `PostCard.svelte`, `FeedView.svelte`, `+page.svelte`, `explore/+page.svelte`, `profile/[id]/+page.svelte` | ✅ Added — delete button on own posts with confirmation |
 | 18 | Comment delete UI | `CommentNode.svelte`, `ThreadView.svelte`, `post/[id]/+page.svelte` | ✅ Added — delete button on own comments |
 | 19 | Real-time vote sync | `post/[id]/+page.svelte` | ✅ Added — Supabase Realtime channel for live post score updates from other users |
+| 20 | Edit own posts | `PostCard.svelte`, `posts.svelte.ts`, `FeedView.svelte`, pages | ✅ Added — inline edit button + textarea with save/cancel |
+| 21 | Profile stats | `profile/[id]/+page.svelte` | ✅ Added — follower count, following count, post count |
+| 22 | Clickable hashtags | `PostCard.svelte`, `utils.ts`, `explore/+page.svelte` | ✅ Added — #tag and @mention parsing, ?tag= search filter |
+| 23 | Notifications page | `notifications/+page.svelte`, `+layout.svelte` | ✅ Added — follow/vote/reply activity timeline |

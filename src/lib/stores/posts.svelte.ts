@@ -153,10 +153,12 @@ class PostsStore {
 
     const prev = { user_vote: post.user_vote, upvotes: post.upvotes, downvotes: post.downvotes, score: post.score };
     this.#applyPostVoteOptimistic(post, voteType);
+    this.posts = [...this.posts];
 
     const { error } = await supabase.rpc('vote_post', { p_post_id: postId, p_vote_type: voteType });
     if (error) {
       Object.assign(post, prev);
+      this.posts = [...this.posts];
       throw error;
     }
 

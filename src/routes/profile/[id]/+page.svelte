@@ -105,8 +105,32 @@
     goto(`/post/${id}`);
   }
 
-  function votePost(id: string, dir: 'up' | 'down') {
-    postsStore.votePost(id, dir);
+  async function votePost(id: string, dir: 'up' | 'down') {
+    const post = userPosts.find(p => p.id === id);
+    if (!post) return;
+    const prev = { user_vote: post.user_vote, upvotes: post.upvotes, downvotes: post.downvotes, score: post.score };
+    applyPostVoteOptimistic(post, dir);
+    try {
+      await postsStore.votePost(id, dir);
+    } catch {
+      Object.assign(post, prev);
+    }
+  }
+
+  function applyPostVoteOptimistic(post: PostWithScore, voteType: 'up' | 'down') {
+    if (post.user_vote === voteType) {
+      post.score += post.user_vote === 'up' ? -1 : 1;
+      post.upvotes += post.user_vote === 'up' ? -1 : 0;
+      post.downvotes += post.user_vote === 'down' ? -1 : 0;
+      post.user_vote = null;
+    } else {
+      if (post.user_vote === 'up') { post.upvotes--; post.score--; }
+      if (post.user_vote === 'down') { post.downvotes--; post.score++; }
+      post.score += voteType === 'up' ? 1 : -1;
+      post.upvotes += voteType === 'up' ? 1 : 0;
+      post.downvotes += voteType === 'down' ? 1 : 0;
+      post.user_vote = voteType;
+    }
   }
 
   async function deletePost(id: string) {

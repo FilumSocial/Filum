@@ -111,7 +111,7 @@
       userVote={post.user_vote}
       onVote={onVote}
     />
-    <button class="act-btn" onclick={(e) => { e.stopPropagation(); }}>
+    <button class="act-btn" onclick={(e) => { e.stopPropagation(); onClick(); }}>
       <span class="mat-icon" style="font-size:16px">chat_bubble_outline</span>
       <span class="text-[13px]">{post.comment_count}</span>
     </button>
