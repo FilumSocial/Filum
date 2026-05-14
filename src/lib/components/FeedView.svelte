@@ -32,6 +32,25 @@
     onNewPost: (content: string) => Promise<void> | void;
     onLoadMore?: () => void;
   } = $props();
+
+  let sentinelEl = $state<HTMLDivElement | null>(null);
+  let sentinelObserver: IntersectionObserver | null = null;
+
+  $effect(() => {
+    const el = sentinelEl;
+    if (sentinelObserver) sentinelObserver.disconnect();
+    if (el && hasMore && onLoadMore) {
+      sentinelObserver = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !loadingMore) {
+          onLoadMore();
+        }
+      }, { rootMargin: '300px' });
+      sentinelObserver.observe(el);
+    }
+    return () => {
+      if (sentinelObserver) sentinelObserver.disconnect();
+    };
+  });
 </script>
 
 <div>
@@ -94,11 +113,12 @@
         onVote={(dir) => onVotePost(post.id, dir)}
       />
     {/each}
-    {#if hasMore && onLoadMore}
+    {#if hasMore}
+      <div bind:this={sentinelEl} class="sentinel"></div>
+    {/if}
+    {#if loadingMore}
       <div class="flex justify-center pb-8">
-        <button class="load-more-btn" onclick={onLoadMore} disabled={loadingMore}>
-          {loadingMore ? 'Loading...' : 'Show more'}
-        </button>
+        <span class="text-[13px] text-[var(--text3)]">Loading more...</span>
       </div>
     {/if}
   {/if}
@@ -167,25 +187,10 @@
     border-color: var(--text3);
     color: var(--text1);
   }
-  .load-more-btn {
-    padding: 8px 24px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text2);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.12s;
-  }
-  .load-more-btn:hover {
-    border-color: var(--text3);
-    color: var(--text1);
-  }
-  .load-more-btn:disabled {
-    opacity: 0.4;
-    cursor: default;
+  .sentinel {
+    height: 1px;
+    width: 100%;
+    pointer-events: none;
   }
   .hd-btn.on {
     background: var(--accent-soft);

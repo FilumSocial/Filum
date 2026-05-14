@@ -8,17 +8,20 @@
     placeholder = 'What are you thinking?',
     buttonLabel = 'Post',
     compact = false,
+    maxLength = compact ? 2000 : 500,
   }: {
     profile: Profile;
     onSubmit: (content: string) => Promise<void> | void;
     placeholder?: string;
     buttonLabel?: string;
     compact?: boolean;
+    maxLength?: number;
   } = $props();
 
   let text = $state('');
   let submitting = $state(false);
   let error = $state('');
+  let remaining = $derived(maxLength - text.length);
 
   async function submit() {
     if (!text.trim() || submitting) return;
@@ -53,16 +56,22 @@
       rows={text && !compact ? 3 : 1}
       onkeydown={handleKeydown}
       disabled={submitting}
+      maxlength={maxLength}
     ></textarea>
     {#if error}
       <p class="error-msg">{error}</p>
     {/if}
     {#if text}
-      <div class="flex justify-end mt-1.5">
+      <div class="flex justify-between items-center mt-1.5">
+        <span
+          class="char-count"
+          class:near={remaining <= 20 && remaining > 0}
+          class:over={remaining < 0}
+        >{remaining}</span>
         <button
           class="post-btn"
           class:compact
-          disabled={!text.trim() || submitting}
+          disabled={!text.trim() || submitting || remaining < 0}
           onclick={submit}
         >
           {submitting ? 'Posting...' : buttonLabel}
@@ -139,6 +148,18 @@
     padding: 5px 13px;
     border-radius: 8px;
     font-size: 12px;
+  }
+  .char-count {
+    font-size: 11px;
+    color: var(--text3);
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .char-count.near {
+    color: oklch(0.7 0.14 75);
+  }
+  .char-count.over {
+    color: oklch(0.65 0.16 25);
   }
   .error-msg {
     font-size: 12px;

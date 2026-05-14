@@ -3,8 +3,10 @@
   import Sidebar from '$lib/components/Sidebar.svelte';
   import RightPanel from '$lib/components/RightPanel.svelte';
   import { auth } from '$lib/stores/auth.svelte';
+  import { createClient } from '$lib/supabase/client';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
+  import type { Profile } from '$lib/types';
 
   let { children } = $props();
 
@@ -17,8 +19,30 @@
     ''
   );
 
+  let suggestions = $state<Profile[]>([]);
+
+  async function loadSuggestions() {
+    if (!auth.profile) { suggestions = []; return; }
+    const supabase = createClient();
+    const { data: followingData } = await supabase
+      .from('follows')
+      .select('following_id')
+      .eq('follower_id', auth.profile.id) as { data: { following_id: string }[] | null };
+    const excludeIds = [auth.profile.id, ...(followingData?.map(f => f.following_id) || [])];
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('*')
+      .not('id', 'in', `(${excludeIds.join(',')})`)
+      .limit(3) as { data: Profile[] | null };
+    suggestions = profiles || [];
+  }
+
   $effect(() => {
     if (!auth.initialized) auth.init();
+  });
+
+  $effect(() => {
+    if (auth.initialized && auth.profile) loadSuggestions();
   });
 
   $effect(() => {
@@ -60,7 +84,8 @@
         { tag: '#WebDev', count: '1.2k' },
         { tag: '#OpenSource', count: '934' },
       ]}
-      suggestions={[]}
+      {suggestions}
+      onFollow={loadSuggestions}
     />
   </div>
 {/if}

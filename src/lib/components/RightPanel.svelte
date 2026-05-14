@@ -1,14 +1,26 @@
 <script lang="ts">
   import Avatar from './Avatar.svelte';
+  import { createClient } from '$lib/supabase/client';
+  import { auth } from '$lib/stores/auth.svelte';
+  import { goto } from '$app/navigation';
   import type { Profile } from '$lib/types';
 
   let {
     trending,
     suggestions,
+    onFollow,
   }: {
     trending: { tag: string; count: string }[];
     suggestions: Profile[];
+    onFollow?: () => void;
   } = $props();
+
+  async function handleFollow(userId: string) {
+    if (!auth.profile) return;
+    const supabase = createClient();
+    await supabase.from('follows').insert({ follower_id: auth.profile.id, following_id: userId });
+    if (onFollow) onFollow();
+  }
 </script>
 
 <aside class="right">
@@ -28,12 +40,14 @@
     <div class="panel-title">Suggestions</div>
     {#each suggestions as user}
       <div class="suggestion-item">
-        <Avatar name={user.display_name} color={user.avatar_color} size={34} />
-        <div class="flex-1 min-w-0">
-          <div class="text-[13px] font-medium">{user.display_name}</div>
-          <div class="text-[11px] text-[var(--text3)]">@{user.username}</div>
-        </div>
-        <button class="follow-btn">Follow</button>
+        <button class="suggestion-profile" onclick={() => goto(`/profile/${user.id}`)}>
+          <Avatar name={user.display_name} color={user.avatar_color} size={34} />
+          <div class="flex-1 min-w-0 text-left">
+            <div class="text-[13px] font-medium">{user.display_name}</div>
+            <div class="text-[11px] text-[var(--text3)]">@{user.username}</div>
+          </div>
+        </button>
+        <button class="follow-btn" onclick={() => handleFollow(user.id)}>Follow</button>
       </div>
     {/each}
   </div>
@@ -85,6 +99,20 @@
     gap: 10px;
     margin-bottom: 12px;
   }
+  .suggestion-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+  .suggestion-profile:hover { opacity: 0.85; }
   .follow-btn {
     padding: 5px 12px;
     border: 1px solid var(--accent);

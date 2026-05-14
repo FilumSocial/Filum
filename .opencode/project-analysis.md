@@ -183,7 +183,7 @@ Every page load hits the database directly. No:
 - Server-side response cache
 
 ### Infinite scroll / load-more
-**Fix:** Added "Show more" button with paginated fetch. Pages now load 50 posts at a time. No infinite scroll (manual button click).
+**Fix:** IntersectionObserver sentinel triggers automatic page fetch when user scrolls near bottom. Pages load 50 posts at a time. No manual button click needed.
 
 ### Good: Index coverage
 Indexes on `posts(author_id)`, `posts(created_at DESC)`, `comments(post_id)`, `comments(parent_id)`, `votes(post_id)`, `votes(comment_id)`, `votes(user_id)`, `follows(follower_id)`, `follows(following_id)` are all appropriate.
@@ -264,3 +264,6 @@ Comments are sorted by `score DESC, created_at ASC` (`posts.svelte.ts`):
 | 11 | Feed data race on re-fetch | `posts.svelte.ts` | ✅ Fixed — `#feedGen` generation counter with stale checks |
 | 12 | Vote rate limiting | `posts.svelte.ts` | ✅ Fixed — 500ms cooldown per target via `#voteCooldowns` |
 | 13 | Follow/unfollow error handling | `profile/[id]/+page.svelte` | ✅ Fixed — optimistic toggle + revert on failure |
+| 14 | Infinite scroll | `FeedView.svelte`, `explore/+page.svelte` | ✅ Fixed — IntersectionObserver sentinel replaces "Show more" button |
+| 15 | User suggestions | `+layout.svelte`, `RightPanel.svelte` | ✅ Fixed — fetches 3 random profiles not followed, with follow button |
+| 16 | Character count | `ComposeBox.svelte` | ✅ Added — remaining chars display, near/over limit colors, maxlength enforcement |
