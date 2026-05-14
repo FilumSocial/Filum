@@ -76,12 +76,13 @@
       />
       {#if userProfile}
         <button class="act-btn text-[12px]" onclick={() => replying = !replying}>
-          &#8617; Reply
+          <span class="mat-icon" style="font-size:14px">reply</span>
+          Reply
         </button>
       {/if}
       {#if isOwn && onDelete}
         <button class="act-btn del text-[12px]" onclick={() => onDelete(comment.id)}>
-          &#128465;
+          <span class="mat-icon" style="font-size:14px">delete</span>
         </button>
       {/if}
     </div>

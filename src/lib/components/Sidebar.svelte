@@ -14,22 +14,10 @@
   } = $props();
 
   const navItems = [
-    {
-      id: 'home', label: 'Home',
-      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8l7-6 7 6v8a1 1 0 01-1 1H3a1 1 0 01-1-1V8z"/><path d="M6 15V9h6v6"/></svg>',
-    },
-    {
-      id: 'explore', label: 'Explore',
-      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="7"/><path d="M6 12l2-5 5-2-2 5-5 2z"/></svg>',
-    },
-    {
-      id: 'notif', label: 'Notifications',
-      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 7a4 4 0 00-8 0c0 3-1 5-2 6h12c-1-1-2-3-2-6"/><path d="M7.5 15a1.5 1.5 0 003 0"/></svg>',
-    },
-    {
-      id: 'profile', label: 'Profile',
-      icon: '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="6" r="3"/><path d="M3 16c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>',
-    },
+    { id: 'home', label: 'Home', icon: 'home' },
+    { id: 'explore', label: 'Explore', icon: 'explore' },
+    { id: 'notif', label: 'Notifications', icon: 'notifications' },
+    { id: 'profile', label: 'Profile', icon: 'person' },
   ];
 </script>
 
@@ -41,7 +29,7 @@
       class:active={currentPage === item.id}
       onclick={() => onNavigate(item.id)}
     >
-      {@html item.icon}
+      <span class="mat-icon" style="font-size:20px">{item.icon}</span>
       {item.label}
     </button>
   {/each}
@@ -54,7 +42,7 @@
         <div class="text-[11px] text-[var(--text3)]">@{userProfile.username}</div>
       </div>
       <button class="logout-btn" onclick={() => auth.signOut()} title="Sign out">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3"/><path d="M11 11l3-3-3-3"/><path d="M14 8H6"/></svg>
+        <span class="mat-icon" style="font-size:18px">logout</span>
       </button>
     </div>
   {:else}

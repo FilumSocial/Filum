@@ -33,7 +33,7 @@
     disabled={voting}
     onclick={(e) => { e.stopPropagation(); handleVote('up'); }}
   >
-    <span class="text-[14px] leading-none">&#9650;</span>
+    <span class="mat-icon" style="font-size:18px">arrow_upward</span>
     {#if !compact}
       <span>{upvotes.toLocaleString()}</span>
     {/if}
@@ -53,7 +53,7 @@
     disabled={voting}
     onclick={(e) => { e.stopPropagation(); handleVote('down'); }}
   >
-    <span class="text-[14px] leading-none">&#9660;</span>
+    <span class="mat-icon" style="font-size:18px">arrow_downward</span>
     {#if !compact}
       <span>{downvotes.toLocaleString()}</span>
     {/if}
