@@ -3,6 +3,7 @@
   import ThreadView from '$lib/components/ThreadView.svelte';
   import { auth } from '$lib/stores/auth.svelte';
   import { postsStore } from '$lib/stores/posts.svelte';
+  import { toast } from '$lib/stores/toast.svelte';
   import { createClient } from '$lib/supabase/client';
   import type { PostWithScore, CommentWithScore, Profile, VoteType } from '$lib/types';
 
@@ -154,6 +155,7 @@
     postsStore.removeCommentFromTree(comments, id);
     comments = comments;
     if (post) post.comment_count = Math.max(0, post.comment_count - 1);
+    toast.success('Comment deleted');
   }
 </script>
 

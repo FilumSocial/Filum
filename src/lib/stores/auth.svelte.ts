@@ -92,6 +92,15 @@ class AuthStore {
     if (error) throw error;
   }
 
+  async updateProfile(updates: Partial<Pick<Profile, 'display_name' | 'bio' | 'avatar_color'>>) {
+    const { error } = await this.#supabase
+      .from('profiles')
+      .update(updates)
+      .eq('id', this.user?.id);
+    if (error) throw error;
+    if (this.profile) Object.assign(this.profile, updates);
+  }
+
   async signOut() {
     await this.#supabase.auth.signOut();
     this.user = null;

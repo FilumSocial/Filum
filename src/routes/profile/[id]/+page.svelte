@@ -4,6 +4,7 @@
   import PostCard from '$lib/components/PostCard.svelte';
   import { auth } from '$lib/stores/auth.svelte';
   import { postsStore } from '$lib/stores/posts.svelte';
+  import { toast } from '$lib/stores/toast.svelte';
   import { createClient } from '$lib/supabase/client';
   import type { Profile, PostWithScore } from '$lib/types';
 
@@ -91,8 +92,10 @@
           .insert({ follower_id: auth.profile.id, following_id: profile.id });
         if (error) throw error;
       }
+      toast.success(wasFollowing ? 'Unfollowed' : 'Following');
     } catch {
       isFollowing = wasFollowing;
+      toast.error('Failed to update follow');
     } finally {
       togglingFollow = false;
     }
@@ -109,12 +112,14 @@
   async function deletePost(id: string) {
     await postsStore.deletePost(id);
     userPosts = userPosts.filter(p => p.id !== id);
+    toast.success('Post deleted');
   }
 
   async function editPost(id: string, content: string) {
     await postsStore.editPost(id, content);
     const p = userPosts.find(p => p.id === id);
     if (p) p.content = content;
+    toast.success('Post updated');
   }
 </script>
 

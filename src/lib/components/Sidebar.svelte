@@ -1,6 +1,7 @@
 <script lang="ts">
   import Avatar from './Avatar.svelte';
   import { auth } from '$lib/stores/auth.svelte';
+  import { theme } from '$lib/stores/theme.svelte';
   import type { Profile } from '$lib/types';
 
   let {
@@ -14,10 +15,10 @@
   } = $props();
 
   const navItems = [
+    { id: 'search', label: 'Search', icon: 'search' },
     { id: 'home', label: 'Home', icon: 'home' },
     { id: 'explore', label: 'Explore', icon: 'explore' },
     { id: 'notif', label: 'Notifications', icon: 'notifications' },
-    { id: 'profile', label: 'Profile', icon: 'person' },
   ];
 </script>
 
@@ -34,7 +35,17 @@
     </button>
   {/each}
   <div class="flex-1"></div>
+
+  <button class="nav-btn" onclick={() => theme.toggle()}>
+    <span class="mat-icon" style="font-size:20px">{theme.mode === 'dark' ? 'light_mode' : 'dark_mode'}</span>
+    {theme.mode === 'dark' ? 'Light' : 'Dark'}
+  </button>
+
   {#if userProfile}
+    <button class="nav-btn" class:active={currentPage === 'settings'} onclick={() => onNavigate('settings')}>
+      <span class="mat-icon" style="font-size:20px">settings</span>
+      Settings
+    </button>
     <div class="user-card">
       <Avatar name={userProfile.display_name} color={userProfile.avatar_color} size={30} />
       <div>
@@ -61,7 +72,6 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    /* Base layer — darkest */
     background: var(--bg);
   }
   .logo {
@@ -97,7 +107,6 @@
     background: var(--accent-soft);
     color: var(--accent);
     border: 1px solid var(--accent);
-    /* box-shadow: var(--shadow-inset); */
   }
   .user-card {
     display: flex;

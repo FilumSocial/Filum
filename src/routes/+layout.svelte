@@ -2,7 +2,9 @@
   import '../app.css';
   import Sidebar from '$lib/components/Sidebar.svelte';
   import RightPanel from '$lib/components/RightPanel.svelte';
+  import Toast from '$lib/components/Toast.svelte';
   import { auth } from '$lib/stores/auth.svelte';
+  import { theme } from '$lib/stores/theme.svelte';
   import { createClient } from '$lib/supabase/client';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
@@ -16,6 +18,8 @@
     $page.url.pathname === '/' ? 'home' :
     $page.url.pathname.startsWith('/explore') ? 'explore' :
     $page.url.pathname.startsWith('/notifications') ? 'notif' :
+    $page.url.pathname.startsWith('/search') ? 'search' :
+    $page.url.pathname.startsWith('/settings') ? 'settings' :
     $page.url.pathname.startsWith('/profile') ? 'profile' :
     ''
   );
@@ -43,20 +47,19 @@
   });
 
   $effect(() => {
-    if (auth.initialized && auth.profile) loadSuggestions();
+    if (!theme.mode) theme.init();
   });
 
   $effect(() => {
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    function update() { document.body.classList.toggle('light', !mq.matches); }
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
+    if (auth.initialized && auth.profile) loadSuggestions();
   });
 
   function handleNavigate(page: string) {
     if (page === 'home') goto('/');
     else if (page === 'explore') goto('/explore');
+    else if (page === 'search') goto('/search');
     else if (page === 'notif') goto('/notifications');
+    else if (page === 'settings') goto('/settings');
     else if (page === 'profile' && auth.profile) goto(`/profile/${auth.profile.id}`);
   }
 </script>
@@ -66,6 +69,7 @@
   <title>Filum</title>
 </svelte:head>
 
+<Toast />
 {#if isAuthPage}
   {@render children()}
 {:else}

@@ -3,6 +3,7 @@
   import FeedView from '$lib/components/FeedView.svelte';
   import { auth } from '$lib/stores/auth.svelte';
   import { postsStore } from '$lib/stores/posts.svelte';
+  import { toast } from '$lib/stores/toast.svelte';
   import { createClient } from '$lib/supabase/client';
   import type { SortMode, FeedMode } from '$lib/types';
 
@@ -63,14 +64,17 @@
   async function newPost(content: string): Promise<void> {
     if (!auth.profile) return;
     await postsStore.createPost(content, auth.profile);
+    toast.success('Post created');
   }
 
   async function deletePost(id: string) {
     await postsStore.deletePost(id);
+    toast.success('Post deleted');
   }
 
   async function editPost(id: string, content: string) {
     await postsStore.editPost(id, content);
+    toast.success('Post updated');
   }
 </script>
 
